@@ -1,0 +1,316 @@
+/* ─────────────────────────────────────────────────────────
+   Studio — Spatial Interfaces · Design Tokens
+   Version: alpha
+   ───────────────────────────────────────────────────────── */
+
+/* ── Color system ─────────────────────────────────────── */
+:root {
+  /* Core palette */
+  --color-primary:        #111827;
+  --color-secondary:      #2640D9;
+  --color-tertiary:       #8A66E6;
+  --color-neutral:        #FFFFFF;
+  --color-bg:             #FAFAFA;
+  --color-surface:        #111827;
+  --color-text-primary:   #111827;
+  --color-text-secondary: #8A66E6;
+  --color-border:         #E5E7EB;
+  --color-border-dark:    #111827;
+  --color-accent:         #111827;
+
+  /* Gradients */
+  --gradient-hero:        linear-gradient(90deg, #6633E6 30%, #4059F0 100%);
+  --gradient-overlay:     linear-gradient(to right, rgba(102,51,230,.30), rgba(64,89,240,.30));
+  --gradient-depth:       linear-gradient(to bottom, transparent, rgba(17,24,39,.40), transparent);
+
+  /* ── Shadows (exact spec recipe) ─────────────────────── */
+  --shadow-glow:
+    rgba(0,0,0,0)      0px 0px 0px 0px,
+    rgba(0,0,0,0)      0px 0px 0px 0px,
+    rgb(38,64,217)     0px 0px 10px 0px,
+    rgba(0,0,0,0)      0px 0px 0px 0px,
+    rgba(0,0,0,0)      0px 0px 0px 0px,
+    rgba(0,0,0,.10)    0px 0px 20px 0px;
+
+  --shadow-soft:
+    rgba(0,0,0,0)      0px 0px 0px 0px,
+    rgba(0,0,0,0)      0px 0px 0px 0px,
+    rgba(0,0,0,0)      0px 0px 0px 0px,
+    rgba(0,0,0,0)      0px 0px 0px 0px,
+    rgba(0,0,0,0)      0px 0px 0px 0px,
+    rgba(0,0,0,.10)    0px 0px 20px 0px;
+
+  /* ── Blur ─────────────────────────────────────────────── */
+  --blur: 12px;
+
+  /* ── Radius family ────────────────────────────────────── */
+  --radius-full: 9999px; /* buttons, badges, chips          */
+  --radius-md:   0px;    /* cards, shells, structural forms */
+
+  /* ── Spacing (4px base rhythm) ───────────────────────── */
+  --space-base:    4px;
+  --space-sm:      2px;
+  --space-md:      4px;
+  --space-lg:      8px;
+  --space-xl:      10px;
+  --space-gap:     8px;
+  --space-card:    24px;
+  --space-section: 24px;
+
+  /* ── Typography ──────────────────────────────────────── */
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+
+  /* display-lg */
+  --type-display-size:    72px;
+  --type-display-weight:  600;
+  --type-display-lh:      72px;
+  --type-display-ls:      -0.025em;
+
+  /* body-md */
+  --type-body-size:    16px;
+  --type-body-weight:  200;
+  --type-body-lh:      24px;
+
+  /* label-md */
+  --type-label-size:    14px;
+  --type-label-weight:  300;
+  --type-label-lh:      20px;
+
+  /* ── Motion ──────────────────────────────────────────── */
+  --ease-standard:   cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out:        ease;
+  --duration-base:   300ms;
+  --duration-fast:   150ms;
+
+  /* ── Gradient border shell (spec technique) ──────────── */
+  --grad-shell: repeating-linear-gradient(
+    45deg,
+    rgba(0,0,0,0.8)  0px,
+    rgba(0,0,0,0.8)  1px,
+    rgba(0,0,0,0)    1px,
+    rgba(0,0,0,0)    48px
+  );
+
+  --grad-shell-light: repeating-linear-gradient(
+    45deg,
+    rgba(255,255,255,0.12) 0px,
+    rgba(255,255,255,0.12) 1px,
+    rgba(255,255,255,0)    1px,
+    rgba(255,255,255,0)    48px
+  );
+}
+
+/* ── Reset ────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+  line-height: var(--type-body-lh);
+  color: var(--color-text-primary);
+  background: var(--color-bg);
+  overflow-x: hidden;
+}
+
+iconify-icon {
+  display: inline-flex;
+  vertical-align: middle;
+}
+
+/* ── Glass surface ────────────────────────────────────── */
+.glass {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(var(--blur));
+  -webkit-backdrop-filter: blur(var(--blur));
+}
+
+.glass-dark {
+  background: rgba(10,15,30,0.88);
+  border: 1px solid rgba(255,255,255,.08);
+  box-shadow: var(--shadow-glow);
+  backdrop-filter: blur(var(--blur));
+  -webkit-backdrop-filter: blur(var(--blur));
+}
+
+/* ── Gradient border shell ────────────────────────────── */
+/*
+  Usage:
+    <div class="grad-shell">
+      <div class="grad-shell-inner"> ... </div>
+    </div>
+*/
+.grad-shell {
+  display: block;
+  padding: 1px;
+  border-radius: var(--radius-md);
+  background: var(--grad-shell-light);
+  box-shadow: var(--shadow-glow);
+}
+.grad-shell-inner {
+  border-radius: var(--radius-md);
+  background: rgba(10,15,30,0.88);
+  backdrop-filter: blur(var(--blur));
+  height: 100%;
+}
+
+/* ── Buttons ──────────────────────────────────────────── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-primary);
+  color: var(--color-neutral);
+  font-family: var(--font-family);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-label-weight);
+  line-height: var(--type-label-lh);
+  padding: 12px 22px;
+  border-radius: var(--radius-full);
+  border: 0px solid var(--color-border);
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background  var(--duration-base) var(--ease-standard),
+    box-shadow  var(--duration-base) var(--ease-standard),
+    transform   var(--duration-fast) var(--ease-standard),
+    color       var(--duration-fast) var(--ease-standard);
+}
+.btn-primary:hover {
+  background: var(--color-secondary);
+  box-shadow: var(--shadow-glow);
+  transform: translateY(-1px);
+}
+.btn-primary:active {
+  transform: translateY(0px);
+}
+
+.btn-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  color: var(--color-primary);
+  font-family: var(--font-family);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-label-weight);
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  text-decoration: none;
+  border-bottom: 1px solid var(--color-primary);
+  transition:
+    color        var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard);
+}
+.btn-link:hover {
+  color: var(--color-secondary);
+  border-color: var(--color-secondary);
+}
+
+/* ── Surface accent bar (left edge treatment) ─────────── */
+.accent-bar {
+  position: relative;
+}
+.accent-bar::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--color-secondary), var(--color-tertiary));
+  opacity: 0;
+  transition: opacity var(--duration-base) var(--ease-standard);
+}
+.accent-bar:hover::before { opacity: 1; }
+
+/* ── Bottom accent line (card/row treatment) ──────────── */
+.accent-bottom {
+  position: relative;
+  overflow: hidden;
+}
+.accent-bottom::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-secondary), var(--color-tertiary));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--duration-base) var(--ease-standard);
+}
+.accent-bottom:hover::after { transform: scaleX(1); }
+
+/* ── Top accent line ─────────────────────────────────── */
+.accent-top::after {
+  top: 0;
+  bottom: auto;
+  transform-origin: left;
+}
+
+/* ── Technical grid overlay ───────────────────────────── */
+.grid-overlay {
+  background-image:
+    linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* ── Section primitives ───────────────────────────────── */
+.section-label {
+  font-size: 11px;
+  font-weight: 300;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--color-tertiary);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-label::before {
+  content: '';
+  display: block;
+  width: 16px;
+  height: 1px;
+  background: var(--color-tertiary);
+  opacity: .5;
+  flex-shrink: 0;
+}
+
+.section-title {
+  font-size: clamp(28px, 4vw, var(--type-display-size));
+  font-weight: var(--type-display-weight);
+  letter-spacing: var(--type-display-ls);
+  line-height: 1.05;
+  color: var(--color-primary);
+  margin-bottom: 16px;
+}
+
+.section-sub {
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+  color: #6B7280;
+  max-width: 520px;
+  line-height: 1.65;
+  margin-bottom: 52px;
+}
+
+/* ── Reveal state (pre-GSAP, prevents flash) ──────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  will-change: opacity, transform;
+}

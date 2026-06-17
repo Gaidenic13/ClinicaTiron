@@ -1,0 +1,2223 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clinica Tiron — Specialist în Coloană Vertebrală și Postură</title>
+<meta name="description" content="Diagnosticare avansată și tratament non-chirurgical pentru dureri de spate, hernie de disc, sciatică și probleme posturale. Dr. Tiron — specialist cu experiență.">
+
+<!-- Iconify Solar (web component — stays as CDN, no bundle needed) -->
+<script src="https://cdn.jsdelivr.net/npm/iconify-icon@2/dist/iconify-icon.min.js"></script>
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --primary:        #111827;
+    --secondary:      #2640D9;
+    --tertiary:       #8A66E6;
+    --neutral:        #FFFFFF;
+    --bg:             #FAFAFA;
+    --surface:        #111827;
+    --text-primary:   #111827;
+    --text-secondary: #8A66E6;
+    --border:         #E5E7EB;
+    --border-dark:    #111827;
+    --accent:         #111827;
+    --radius-full:    9999px;
+    --radius-md:      0px;
+    /* Exact shadow from design spec */
+    --shadow-glow:    rgba(0,0,0,0) 0px 0px 0px 0px, rgba(0,0,0,0) 0px 0px 0px 0px, rgb(38,64,217) 0px 0px 10px 0px, rgba(0,0,0,0) 0px 0px 0px 0px, rgba(0,0,0,0) 0px 0px 0px 0px, rgba(0,0,0,0.1) 0px 0px 20px 0px;
+    --blur:           12px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+
+  iconify-icon { display: inline-flex; vertical-align: middle; }
+
+  /* ─── WebGL Canvas ─── */
+  #webgl-canvas {
+    /* FIX 3: scoped to hero — position:absolute so it stays inside .hero
+       instead of position:fixed which covered the entire page */
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0; /* sits above hero bg but below z-index:1 hero content */
+  }
+
+  /* ─── GRADIENT BORDER SHELL ─── */
+  .grad-shell {
+    display: block;
+    padding: 1px;
+    border-radius: 0px;
+    background: repeating-linear-gradient(
+      45deg,
+      rgba(0,0,0,0.8) 0px,
+      rgba(0,0,0,0.8) 1px,
+      rgba(0,0,0,0) 1px,
+      rgba(0,0,0,0) 48px
+    );
+  }
+  .grad-shell-inner {
+    border-radius: 0px;
+    background: rgba(15,23,42,0.92);
+    box-sizing: border-box;
+    height: 100%;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(255,255,255,0.88);
+    backdrop-filter: blur(var(--blur));
+    -webkit-backdrop-filter: blur(var(--blur));
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .nav-logo {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--primary);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .nav-logo span { color: var(--secondary); }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: color 150ms ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .nav-links a:hover { color: var(--secondary); }
+
+  /* ─── BUTTONS ─── */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--primary);
+    color: var(--neutral);
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 1;
+    padding: 12px 22px;
+    border-radius: var(--radius-full);
+    border: 0px solid var(--border);
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 300ms cubic-bezier(0.4,0,0.2,1), box-shadow 300ms cubic-bezier(0.4,0,0.2,1);
+    white-space: nowrap;
+  }
+  .btn-primary:hover {
+    background: var(--secondary);
+    box-shadow: var(--shadow-glow);
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    color: var(--primary);
+    font-size: 14px;
+    font-weight: 300;
+    padding: 0;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    text-decoration: none;
+    border-bottom: 1px solid var(--primary);
+    transition: color 150ms ease, border-color 150ms ease;
+  }
+  .btn-secondary:hover { color: var(--secondary); border-color: var(--secondary); }
+
+  /* ─── HAMBURGER ─── */
+  .hamburger {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px; height: 40px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: var(--primary);
+    font-size: 22px;
+    transition: color 150ms;
+  }
+  .hamburger:hover { color: var(--secondary); }
+
+  /* ─── MOBILE MENU ─── */
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: rgba(255,255,255,0.97);
+    backdrop-filter: blur(var(--blur));
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 36px;
+    opacity: 0;
+    transition: opacity 300ms ease;
+  }
+  .mobile-menu.open { display: flex; opacity: 1; }
+  .mobile-menu a {
+    font-size: 24px;
+    font-weight: 300;
+    color: var(--primary);
+    text-decoration: none;
+    letter-spacing: -0.015em;
+    transition: color 150ms ease;
+  }
+  .mobile-menu a:hover { color: var(--secondary); }
+  .mobile-close {
+    position: absolute;
+    top: 20px; right: 28px;
+    font-size: 22px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 150ms;
+  }
+  .mobile-close:hover { color: var(--secondary); }
+
+  /* ─── HERO ─── */
+  /* FIX 1+3: light background so glass bubbles are visible;
+     overflow:hidden + position:relative scopes the canvas */
+  .hero {
+    background: #F2F1FA; /* soft lavender-white — Neuform-style light bg */
+    color: var(--primary);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 104px 32px 80px;
+    gap: 48px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Subtle vignette to ground the bubbles */
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 75% 40%, rgba(138,102,230,.07) 0%, transparent 55%),
+      radial-gradient(ellipse at 15% 85%, rgba(38,64,217,.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Remove old dark grid overlay — it showed as white lines, useless on light bg */
+  .hero::after { display: none; }
+
+  .hero-content { position: relative; z-index: 1; }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(138,102,230,.08);
+    border: 1px solid rgba(138,102,230,.20);
+    border-radius: var(--radius-full);
+    padding: 6px 14px 6px 10px;
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--tertiary);
+    margin-bottom: 28px;
+  }
+  .hero-badge-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #4ade80;
+    animation: pulse 2.4s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(1.4)} }
+
+  /* ─── HERO BUBBLES ─── */
+  .hero-bubbles {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .bubble {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(52px);
+    opacity: 0;
+    will-change: transform, opacity;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+  }
+
+  /* Individual bubble sizes, positions, colors */
+  /* Soft halo glows — visible complement to the WebGL glass spheres */
+  .bubble-1 {
+    width: 520px; height: 520px;
+    background: radial-gradient(circle at 40% 40%, rgba(138,134,229,.38), rgba(38,64,217,.12) 55%, transparent 75%);
+    top: -140px; left: -100px;
+    animation: bubble-float-1 11s 0s infinite;
+  }
+  .bubble-2 {
+    width: 400px; height: 400px;
+    background: radial-gradient(circle at 55% 45%, rgba(38,64,217,.30), rgba(138,134,229,.10) 55%, transparent 75%);
+    top: 25%; right: -80px;
+    animation: bubble-float-2 14s 1.5s infinite;
+  }
+  .bubble-3 {
+    width: 300px; height: 300px;
+    background: radial-gradient(circle at 50% 50%, rgba(102,51,230,.28), rgba(38,64,217,.08) 60%, transparent 80%);
+    bottom: -90px; left: 28%;
+    animation: bubble-float-3 9s 3s infinite;
+  }
+  .bubble-4 {
+    width: 220px; height: 220px;
+    background: radial-gradient(circle at 45% 55%, rgba(138,134,229,.26), rgba(64,89,240,.07) 55%, transparent 75%);
+    top: 18%; left: 38%;
+    animation: bubble-float-4 13s 0.8s infinite;
+  }
+  .bubble-5 {
+    width: 170px; height: 170px;
+    background: radial-gradient(circle at 50% 45%, rgba(64,89,240,.28), transparent 72%);
+    bottom: 12%; right: 18%;
+    animation: bubble-float-5 8s 2s infinite;
+  }
+
+  @keyframes bubble-float-1 {
+    0%   { opacity: 0;    transform: translate(0px, 0px)    scale(1);    }
+    15%  { opacity: 0.55; }
+    50%  { opacity: 0.45; transform: translate(32px, 28px)  scale(1.07); }
+    85%  { opacity: 0.55; }
+    100% { opacity: 0;    transform: translate(12px, -18px) scale(0.96); }
+  }
+  @keyframes bubble-float-2 {
+    0%   { opacity: 0;    transform: translate(0px, 0px)     scale(1);    }
+    15%  { opacity: 0.50; }
+    50%  { opacity: 0.40; transform: translate(-28px, 22px)  scale(1.06); }
+    85%  { opacity: 0.50; }
+    100% { opacity: 0;    transform: translate(-10px, -14px) scale(0.95); }
+  }
+  @keyframes bubble-float-3 {
+    0%   { opacity: 0;    transform: translate(0px, 0px)    scale(1);    }
+    20%  { opacity: 0.45; }
+    50%  { opacity: 0.35; transform: translate(20px, -24px) scale(1.08); }
+    80%  { opacity: 0.45; }
+    100% { opacity: 0;    transform: translate(-8px, -10px) scale(0.97); }
+  }
+  @keyframes bubble-float-4 {
+    0%   { opacity: 0;    transform: translate(0px, 0px)    scale(1);    }
+    20%  { opacity: 0.38; }
+    50%  { opacity: 0.30; transform: translate(-18px, 20px) scale(1.05); }
+    80%  { opacity: 0.38; }
+    100% { opacity: 0;    transform: translate(10px, -8px)  scale(0.98); }
+  }
+  @keyframes bubble-float-5 {
+    0%   { opacity: 0;    transform: translate(0px, 0px)   scale(1);    }
+    25%  { opacity: 0.42; }
+    50%  { opacity: 0.34; transform: translate(14px, 18px) scale(1.06); }
+    75%  { opacity: 0.42; }
+    100% { opacity: 0;    transform: translate(-6px, 6px)  scale(0.96); }
+  }
+
+  /* Reduce motion */
+  @media (prefers-reduced-motion: reduce) {
+    .bubble { animation: none; opacity: 0.15; }
+  }
+
+  .hero h1 {
+    font-size: clamp(42px, 5.5vw, 72px);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.025em;
+    margin-bottom: 24px;
+  }
+  .hero h1 em {
+    font-style: normal;
+    background: linear-gradient(90deg, #8A66E6 0%, #2640D9 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: 16px;
+    font-weight: 200;
+    line-height: 1.65;
+    color: #4B5563;
+    max-width: 460px;
+    margin-bottom: 36px;
+  }
+
+  .hero-ctas {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 52px;
+  }
+  .hero-ctas .btn-primary { font-size: 15px; padding: 14px 28px; }
+  .hero-ctas .btn-secondary {
+    color: var(--primary);
+    border-color: rgba(17,24,39,.30);
+  }
+  .hero-ctas .btn-secondary:hover { color: var(--secondary); border-color: var(--secondary); }
+
+  .hero-trust {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px 36px;
+    padding-top: 4px;
+    border-top: 1px solid rgba(17,24,39,.10);
+  }
+  .trust-item { display: flex; flex-direction: column; gap: 3px; }
+  .trust-item strong {
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    color: var(--primary);
+    line-height: 1;
+  }
+  .trust-item span {
+    font-size: 11px;
+    font-weight: 200;
+    color: #9CA3AF;
+    letter-spacing: 0.02em;
+  }
+
+  /* Hero card with gradient border shell */
+  .hero-visual {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .hero-card-shell {
+    width: 100%;
+    max-width: 380px;
+    padding: 1px;
+    background: repeating-linear-gradient(
+      45deg,
+      rgba(138,102,230,0.25) 0px,
+      rgba(138,102,230,0.25) 1px,
+      rgba(0,0,0,0) 1px,
+      rgba(0,0,0,0) 48px
+    );
+    box-shadow: var(--shadow-glow);
+  }
+
+  .hero-card {
+    background: rgba(255,255,255,0.82);
+    backdrop-filter: blur(var(--blur));
+    padding: 28px;
+    width: 100%;
+  }
+
+  .hero-card-label {
+    font-size: 10px;
+    font-weight: 300;
+    color: #9CA3AF;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .hero-card-label::before {
+    content: '';
+    display: block;
+    width: 16px; height: 1px;
+    background: rgba(17,24,39,.15);
+  }
+
+  .symptom-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+    margin-bottom: 28px;
+  }
+  .symptom-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 200;
+    color: #4B5563;
+    line-height: 1.3;
+  }
+  .symptom-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--tertiary);
+    flex-shrink: 0;
+  }
+
+  .hero-card-divider {
+    height: 1px;
+    background: rgba(17,24,39,.08);
+    margin-bottom: 20px;
+  }
+
+  .hero-card-cta {
+    width: 100%;
+    justify-content: center;
+    font-size: 14px;
+    padding: 13px 20px;
+  }
+
+  /* ─── SECTION PRIMITIVES ─── */
+  .section-label {
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--tertiary);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-label::before {
+    content: '';
+    display: block;
+    width: 16px; height: 1px;
+    background: var(--tertiary);
+    opacity: .5;
+  }
+
+  .section-title {
+    font-size: clamp(28px, 4vw, 48px);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.05;
+    color: var(--primary);
+    margin-bottom: 16px;
+  }
+
+  .section-sub {
+    font-size: 16px;
+    font-weight: 200;
+    color: #6B7280;
+    max-width: 520px;
+    line-height: 1.65;
+    margin-bottom: 52px;
+  }
+
+  .max-w { max-width: 1120px; margin-left: auto; margin-right: auto; }
+  .section-header-center { display: flex; flex-direction: column; align-items: center; text-align: center; }
+  .section-header-center .section-sub { text-align: center; }
+  .section-header-center .section-label::before { display: none; }
+
+  /* ─── SELF-ID ─── */
+  .self-id {
+    padding: 88px 32px;
+    background: var(--bg);
+  }
+
+  .path-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .path-card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 28px 24px;
+    background: var(--neutral);
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--primary);
+    transition: background 300ms cubic-bezier(0.4,0,0.2,1);
+    position: relative;
+    overflow: hidden;
+  }
+  .path-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--secondary), var(--tertiary));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 300ms cubic-bezier(0.4,0,0.2,1);
+  }
+  .path-card:hover { background: #F9FAFB; }
+  .path-card:hover::after { transform: scaleX(1); }
+
+  .path-icon {
+    width: 40px; height: 40px;
+    background: #F3F4F6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--tertiary);
+    transition: background 300ms ease, color 300ms ease;
+  }
+  .path-card:hover .path-icon { background: rgba(38,64,217,.06); color: var(--secondary); }
+
+  .path-card h3 {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+  .path-card p {
+    font-size: 13px;
+    font-weight: 200;
+    color: #6B7280;
+    line-height: 1.5;
+    flex: 1;
+  }
+  .path-arrow {
+    color: var(--secondary);
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity 200ms ease, transform 200ms ease;
+  }
+  .path-card:hover .path-arrow { opacity: 1; transform: translateX(0); }
+
+  /* ─── HOW IT WORKS ─── */
+  .how {
+    padding: 88px 32px;
+    background: var(--neutral);
+    border-top: 1px solid var(--border);
+  }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0;
+    margin-top: 52px;
+    position: relative;
+    border: 1px solid var(--border);
+  }
+
+  .step {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    padding: 28px 20px;
+    gap: 14px;
+    position: relative;
+    border-right: 1px solid var(--border);
+  }
+  .step:last-child { border-right: none; }
+
+  .step-num {
+    width: 36px; height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    background: var(--primary);
+    color: var(--neutral);
+    flex-shrink: 0;
+    letter-spacing: -0.01em;
+  }
+  .step:nth-child(2) .step-num { background: var(--secondary); }
+  .step:nth-child(3) .step-num { background: var(--tertiary); }
+  .step:nth-child(4) .step-num { background: #059669; }
+  .step:nth-child(5) .step-num { background: var(--secondary); }
+  .step:nth-child(6) .step-num { background: var(--primary); }
+
+  .step-icon { color: #9CA3AF; }
+
+  .step h4 {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--primary);
+    line-height: 1.3;
+  }
+  .step p {
+    font-size: 12px;
+    font-weight: 200;
+    color: #6B7280;
+    line-height: 1.55;
+  }
+
+  /* ─── CONDITIONS ─── */
+  .conditions {
+    padding: 88px 32px;
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+  }
+
+  .search-bar {
+    position: relative;
+    max-width: 480px;
+    margin-bottom: 40px;
+  }
+  .search-bar input {
+    width: 100%;
+    font-size: 14px;
+    font-weight: 200;
+    font-family: inherit;
+    padding: 13px 48px 13px 18px;
+    border: 1px solid var(--border);
+    background: var(--neutral);
+    outline: none;
+    color: var(--primary);
+    border-radius: var(--radius-full);
+    transition: border-color 150ms, box-shadow 150ms;
+  }
+  .search-bar input:focus {
+    border-color: var(--secondary);
+    box-shadow: 0 0 0 3px rgba(38,64,217,.07);
+  }
+  .search-bar input::placeholder { color: #9CA3AF; }
+  .search-btn {
+    position: absolute;
+    right: 5px; top: 50%;
+    transform: translateY(-50%);
+    width: 34px; height: 34px;
+    border-radius: var(--radius-full);
+    background: var(--primary);
+    color: var(--neutral);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 150ms ease;
+  }
+  .search-btn:hover { background: var(--secondary); }
+
+  .conditions-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .condition-card {
+    background: var(--neutral);
+    padding: 28px;
+    text-decoration: none;
+    color: var(--primary);
+    transition: background 300ms cubic-bezier(0.4,0,0.2,1);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+  .condition-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--secondary), var(--tertiary));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 300ms cubic-bezier(0.4,0,0.2,1);
+  }
+  .condition-card:hover { background: #F9FAFB; }
+  .condition-card:hover::after { transform: scaleX(1); }
+
+  .condition-tag {
+    font-size: 10px;
+    font-weight: 300;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--tertiary);
+  }
+  .condition-card h3 {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  .condition-card p {
+    font-size: 14px;
+    font-weight: 200;
+    color: #6B7280;
+    line-height: 1.55;
+  }
+
+  .symptoms-mini {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+  }
+  .symptom-tag {
+    font-size: 11px;
+    font-weight: 300;
+    padding: 3px 10px;
+    background: #F3F4F6;
+    border-radius: var(--radius-full);
+    color: #6B7280;
+  }
+
+  .condition-link {
+    margin-top: auto;
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--secondary);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    letter-spacing: 0.02em;
+  }
+
+  /* ─── TECHNOLOGY ─── */
+  .technology {
+    padding: 88px 32px;
+    background: var(--surface);
+    color: var(--neutral);
+    position: relative;
+    overflow: hidden;
+    border-top: 1px solid #1F2937;
+  }
+  .technology::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 80% 40%, rgba(102,51,230,.18) 0%, transparent 55%),
+      radial-gradient(ellipse at 10% 80%, rgba(38,64,217,.1) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .technology::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+  }
+
+  .tech-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: start;
+    margin-top: 52px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* POSTUROTEST card with gradient border shell */
+  .tech-highlight-shell {
+    padding: 1px;
+    background: repeating-linear-gradient(
+      45deg,
+      rgba(255,255,255,0.12) 0px,
+      rgba(255,255,255,0.12) 1px,
+      rgba(255,255,255,0) 1px,
+      rgba(255,255,255,0) 48px
+    );
+    box-shadow: var(--shadow-glow);
+    height: 100%;
+  }
+
+  .tech-highlight {
+    background: rgba(10,15,30,0.88);
+    backdrop-filter: blur(var(--blur));
+    padding: 36px;
+    height: 100%;
+    position: relative;
+    z-index: 1;
+  }
+
+  .tech-highlight-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    font-weight: 300;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--tertiary);
+    margin-bottom: 20px;
+  }
+  .tech-highlight h3 {
+    font-size: clamp(24px, 2.8vw, 36px);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    color: #fff;
+    margin-bottom: 16px;
+  }
+  .tech-highlight p {
+    font-size: 14px;
+    font-weight: 200;
+    color: rgba(255,255,255,.55);
+    line-height: 1.65;
+    margin-bottom: 28px;
+  }
+
+  .tech-benefits {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+  .tech-benefits li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    font-weight: 200;
+    color: rgba(255,255,255,.72);
+  }
+  .tech-benefit-check {
+    width: 18px; height: 18px;
+    background: rgba(74,222,128,.12);
+    color: #4ade80;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 11px;
+  }
+
+  .tech-items {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: rgba(255,255,255,.06);
+  }
+
+  .tech-item {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 22px 24px;
+    background: rgba(255,255,255,.02);
+    transition: background 300ms ease;
+    cursor: default;
+    border: 1px solid rgba(255,255,255,0);
+    position: relative;
+  }
+  .tech-item::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--secondary), var(--tertiary));
+    opacity: 0;
+    transition: opacity 300ms ease;
+  }
+  .tech-item:hover { background: rgba(255,255,255,.05); }
+  .tech-item:hover::before { opacity: 1; }
+
+  .tech-icon {
+    width: 40px; height: 40px;
+    background: rgba(138,102,230,.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--tertiary);
+    flex-shrink: 0;
+  }
+
+  .tech-item h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 5px;
+    letter-spacing: -0.01em;
+  }
+  .tech-item p {
+    font-size: 12px;
+    font-weight: 200;
+    color: rgba(255,255,255,.48);
+    line-height: 1.55;
+  }
+
+  /* ─── DOCTOR ─── */
+  .doctor {
+    padding: 88px 32px;
+    background: var(--neutral);
+    border-top: 1px solid var(--border);
+  }
+
+  .doctor-grid {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 72px;
+    align-items: start;
+    margin-top: 52px;
+  }
+
+  .doctor-photo-wrap { position: relative; }
+  .doctor-photo {
+    width: 100%;
+    aspect-ratio: 3/4;
+    background: linear-gradient(135deg, #E5E7EB 0%, #D1D5DB 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+  .doctor-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .doctor-photo-placeholder {
+    color: #9CA3AF;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .doctor-credentials {
+    position: absolute;
+    bottom: -1px; right: -1px;
+    background: var(--primary);
+    color: var(--neutral);
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .doctor-credentials strong {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1;
+  }
+  .doctor-credentials span { font-size: 11px; font-weight: 200; opacity: .5; }
+
+  .doctor-content { display: flex; flex-direction: column; gap: 28px; }
+  .doctor-name {
+    font-size: clamp(32px, 3.5vw, 48px);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1;
+    color: var(--primary);
+  }
+  .doctor-title {
+    font-size: 15px;
+    color: var(--secondary);
+    font-weight: 300;
+    margin-top: 8px;
+  }
+  .doctor-content > p {
+    font-size: 15px;
+    font-weight: 200;
+    color: #6B7280;
+    line-height: 1.65;
+  }
+
+  .cert-list { display: flex; flex-direction: column; gap: 10px; }
+  .cert-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--primary);
+    line-height: 1.4;
+  }
+  .cert-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--secondary);
+    flex-shrink: 0;
+    margin-top: 5px;
+  }
+
+  .assoc-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .assoc-chip {
+    font-size: 11px;
+    font-weight: 300;
+    padding: 5px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    color: #6B7280;
+    letter-spacing: 0.02em;
+  }
+
+  .doctor-cta { align-self: flex-start; }
+
+  /* ─── REVIEWS ─── */
+  .trust {
+    padding: 88px 32px;
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+  }
+
+  .trust-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 32px;
+  }
+
+  .trust-card {
+    background: var(--neutral);
+    padding: 28px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .trust-stars {
+    display: flex;
+    gap: 2px;
+    color: #F59E0B;
+    font-size: 14px;
+  }
+  .trust-card blockquote {
+    font-size: 13px;
+    font-weight: 200;
+    color: #4B5563;
+    line-height: 1.65;
+    font-style: italic;
+    flex: 1;
+  }
+  .trust-author {
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .trust-author::before {
+    content: '';
+    display: block;
+    width: 16px; height: 1px;
+    background: var(--border);
+  }
+  .trust-author span { color: #9CA3AF; font-weight: 200; }
+
+  .google-badge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+    padding: 20px;
+    border: 1px solid var(--border);
+    background: var(--neutral);
+  }
+  .google-badge-stars { color: #F59E0B; font-size: 16px; letter-spacing: 1px; }
+  .google-badge-score {
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    color: var(--primary);
+  }
+  .google-badge-label {
+    font-size: 13px;
+    font-weight: 200;
+    color: #6B7280;
+  }
+  .google-badge-divider {
+    width: 1px; height: 24px;
+    background: var(--border);
+  }
+
+  /* ─── BOOKING ─── */
+  .booking {
+    padding: 88px 32px;
+    background: var(--surface);
+    color: var(--neutral);
+    position: relative;
+    overflow: hidden;
+    border-top: 1px solid #1F2937;
+  }
+  .booking::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 20% 60%, rgba(38,64,217,.18) 0%, transparent 55%);
+    pointer-events: none;
+  }
+  .booking::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+  }
+
+  .booking-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: start;
+  }
+
+  .booking-left h2 {
+    font-size: clamp(32px, 4vw, 52px);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.05;
+    color: #fff;
+    margin-bottom: 18px;
+  }
+  .booking-left > p {
+    font-size: 14px;
+    font-weight: 200;
+    color: rgba(255,255,255,.5);
+    line-height: 1.65;
+    margin-bottom: 36px;
+  }
+
+  .contact-options { display: flex; flex-direction: column; gap: 1px; }
+  .contact-opt {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,0);
+    text-decoration: none;
+    color: #fff;
+    transition: background 300ms ease, border-color 300ms ease;
+    position: relative;
+  }
+  .contact-opt::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--secondary), var(--tertiary));
+    opacity: 0;
+    transition: opacity 300ms ease;
+  }
+  .contact-opt:hover { background: rgba(255,255,255,.08); }
+  .contact-opt:hover::before { opacity: 1; }
+
+  .contact-opt-icon {
+    width: 38px; height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: rgba(255,255,255,.06);
+    color: var(--tertiary);
+  }
+
+  .contact-opt-text { flex: 1; }
+  .contact-opt-text strong {
+    display: block;
+    font-size: 13px;
+    font-weight: 300;
+    color: #fff;
+    margin-bottom: 2px;
+  }
+  .contact-opt-text span {
+    font-size: 11px;
+    font-weight: 200;
+    color: rgba(255,255,255,.38);
+  }
+  .contact-opt-arrow { color: rgba(255,255,255,.25); }
+
+  /* Booking form with gradient border shell */
+  .booking-form-shell {
+    padding: 1px;
+    background: repeating-linear-gradient(
+      45deg,
+      rgba(255,255,255,0.1) 0px,
+      rgba(255,255,255,0.1) 1px,
+      rgba(255,255,255,0) 1px,
+      rgba(255,255,255,0) 48px
+    );
+  }
+
+  .booking-form {
+    background: rgba(10,15,30,0.88);
+    backdrop-filter: blur(var(--blur));
+    padding: 32px;
+  }
+
+  .booking-form h3 {
+    font-size: 17px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 28px;
+    letter-spacing: -0.01em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  .form-group label {
+    font-size: 11px;
+    font-weight: 300;
+    color: rgba(255,255,255,.4);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.10);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 200;
+    font-family: inherit;
+    padding: 11px 14px;
+    outline: none;
+    transition: border-color 150ms ease;
+    width: 100%;
+    border-radius: 0;
+    -webkit-appearance: none;
+  }
+  .form-group input::placeholder,
+  .form-group textarea::placeholder { color: rgba(255,255,255,.2); }
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    border-color: rgba(138,102,230,.55);
+  }
+  .form-group select option { background: #0A0F1E; color: #fff; }
+  .form-group textarea { resize: vertical; min-height: 72px; }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+  .form-submit {
+    width: 100%;
+    padding: 13px;
+    font-size: 14px;
+    justify-content: center;
+    margin-top: 8px;
+  }
+
+  .form-note {
+    font-size: 11px;
+    font-weight: 200;
+    color: rgba(255,255,255,.25);
+    text-align: center;
+    margin-top: 10px;
+    line-height: 1.5;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: #050810;
+    color: rgba(255,255,255,.4);
+    padding: 56px 32px 32px;
+    border-top: 1px solid rgba(255,255,255,.05);
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 48px;
+    margin-bottom: 48px;
+  }
+
+  .footer-brand > p {
+    font-size: 13px;
+    font-weight: 200;
+    line-height: 1.65;
+    margin-top: 16px;
+    color: rgba(255,255,255,.35);
+  }
+
+  .footer-logo {
+    font-size: 17px;
+    font-weight: 600;
+    color: #fff;
+    text-decoration: none;
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .footer-logo span { color: var(--secondary); }
+
+  .footer-col h5 {
+    font-size: 10px;
+    font-weight: 300;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.25);
+    margin-bottom: 18px;
+  }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .footer-col a {
+    font-size: 13px;
+    font-weight: 200;
+    color: rgba(255,255,255,.4);
+    text-decoration: none;
+    transition: color 150ms ease;
+  }
+  .footer-col a:hover { color: rgba(255,255,255,.85); }
+
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,.05);
+    padding-top: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    font-weight: 200;
+  }
+
+  /* ─── STICKY MOBILE CTA ─── */
+  .sticky-mobile {
+    display: none;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 200;
+    background: rgba(255,255,255,.96);
+    backdrop-filter: blur(var(--blur));
+    border-top: 1px solid var(--border);
+    padding: 12px 16px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    gap: 10px;
+  }
+  .sticky-mobile .btn-primary {
+    flex: 1;
+    justify-content: center;
+    padding: 14px 16px;
+    font-size: 14px;
+  }
+  .sticky-phone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px; height: 50px;
+    background: #F3F4F6;
+    border-radius: var(--radius-full);
+    text-decoration: none;
+    color: var(--primary);
+    transition: background 150ms ease;
+    flex-shrink: 0;
+    border: 1px solid var(--border);
+  }
+  .sticky-phone:hover { background: #E5E7EB; }
+
+  /* ─── REVEAL STATES (pre-GSAP) ─── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 1024px) {
+    .path-grid { grid-template-columns: repeat(3, 1fr); }
+    .steps { grid-template-columns: repeat(3, 1fr); }
+    .step { border-bottom: 1px solid var(--border); }
+    .step:nth-child(3), .step:nth-child(6) { border-right: none; }
+    .conditions-grid { grid-template-columns: repeat(2, 1fr); }
+    .trust-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; padding-top: 88px; min-height: unset; padding-bottom: 64px; }
+    .hero-visual { display: none; }
+    .tech-grid { grid-template-columns: 1fr; }
+    .doctor-grid { grid-template-columns: 1fr; }
+    .doctor-photo-wrap { max-width: 280px; }
+    .booking-inner { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+  }
+
+  @media (max-width: 640px) {
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    .sticky-mobile { display: flex; }
+    body { padding-bottom: 74px; }
+    .path-grid { grid-template-columns: 1fr; }
+    .steps { grid-template-columns: 1fr; }
+    .step { border-right: none; }
+    .conditions-grid { grid-template-columns: 1fr; }
+    .trust-grid { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+    .form-row { grid-template-columns: 1fr; }
+    nav { padding: 0 20px; }
+    .hero { padding: 88px 20px 56px; }
+    .self-id, .how, .conditions, .technology, .doctor, .trust, .booking { padding-left: 20px; padding-right: 20px; }
+    footer { padding: 40px 20px 28px; }
+    .booking-form { padding: 24px 20px; }
+    .hero h1 { font-size: 40px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- WebGL Canvas -->
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Meniu navigare">
+  <button class="mobile-close" id="mobileClose" aria-label="Închide meniu">
+    <iconify-icon icon="solar:close-circle-linear" width="28" height="28"></iconify-icon>
+  </button>
+  <a href="#conditions" onclick="closeMobile()">Afecțiuni</a>
+  <a href="#treatments" onclick="closeMobile()">Tratamente</a>
+  <a href="#technology" onclick="closeMobile()">Tehnologie</a>
+  <a href="#doctor" onclick="closeMobile()">Dr. Tiron</a>
+  <a href="#reviews" onclick="closeMobile()">Recenzii</a>
+  <a href="#contact" onclick="closeMobile()">Contact</a>
+  <a href="#booking" class="btn-primary" onclick="closeMobile()" style="margin-top:8px;padding:14px 36px;font-size:16px;">
+    <iconify-icon icon="solar:calendar-add-linear" width="18" height="18"></iconify-icon>
+    Programează Consultație
+  </a>
+</div>
+
+<!-- Navigation -->
+<nav role="navigation" aria-label="Navigare principală">
+  <a href="/" class="nav-logo" aria-label="Clinica Tiron">
+    <iconify-icon icon="solar:hospital-linear" width="20" height="20" style="color:var(--secondary)"></iconify-icon>
+    Clinica <span>Tiron</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#conditions">Afecțiuni</a></li>
+    <li><a href="#treatments">Tratamente</a></li>
+    <li><a href="#technology">Tehnologie</a></li>
+    <li><a href="#doctor">Dr. Tiron</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#booking" class="btn-primary">
+    <iconify-icon icon="solar:calendar-add-linear" width="16" height="16"></iconify-icon>
+    Programează Consultație
+  </a>
+  <button class="hamburger" id="hamburger" aria-label="Deschide meniu" aria-expanded="false">
+    <iconify-icon icon="solar:hamburger-menu-linear" width="24" height="24"></iconify-icon>
+  </button>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero" aria-labelledby="hero-heading">
+
+  <!-- WebGL canvas — scoped here so it covers only the hero -->
+  <canvas id="webgl-canvas" aria-hidden="true"></canvas>
+
+  <!-- CSS bubble glows (complement the WebGL spheres with soft blur halos) -->
+  <div class="hero-bubbles" aria-hidden="true">
+    <div class="bubble bubble-1"></div>
+    <div class="bubble bubble-2"></div>
+    <div class="bubble bubble-3"></div>
+    <div class="bubble bubble-4"></div>
+    <div class="bubble bubble-5"></div>
+  </div>
+
+  <div class="hero-content max-w" style="max-width:580px">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      Consultații disponibile — Luni–Vineri
+    </div>
+    <h1 id="hero-heading">
+      Durerea ta<br>are<br><em>o soluție.</em>
+    </h1>
+    <p class="hero-sub">
+      Specialist în coloana vertebrală, diagnostic avansat și tratament non-chirurgical.
+      Dacă ai dureri de spate, hernie, sciatică sau probleme posturale — ești la locul potrivit.
+    </p>
+    <div class="hero-ctas">
+      <a href="#booking" class="btn-primary" style="font-size:15px;padding:14px 28px;">
+        <iconify-icon icon="solar:calendar-add-linear" width="17" height="17"></iconify-icon>
+        Programează Consultație
+      </a>
+      <a href="#conditions" class="btn-secondary">
+        Identifică afecțiunea mea
+        <iconify-icon icon="solar:arrow-right-linear" width="16" height="16"></iconify-icon>
+      </a>
+    </div>
+    <div class="hero-trust">
+      <div class="trust-item">
+        <strong>15+</strong>
+        <span>ani experiență</span>
+      </div>
+      <div class="trust-item">
+        <strong>3.000+</strong>
+        <span>pacienți tratați</span>
+      </div>
+      <div class="trust-item">
+        <strong>4.9★</strong>
+        <span>Google Reviews</span>
+      </div>
+      <div class="trust-item">
+        <strong>Non-chirurgical</strong>
+        <span>abordare</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="hero-card-shell">
+      <div class="hero-card">
+        <p class="hero-card-label">Ce te aduce la noi?</p>
+        <ul class="symptom-list">
+          <li><span class="symptom-dot"></span>Durere de spate sau gât</li>
+          <li><span class="symptom-dot"></span>Hernie de disc</li>
+          <li><span class="symptom-dot"></span>Sciatică sau amorțeli</li>
+          <li><span class="symptom-dot"></span>Probleme posturale</li>
+          <li><span class="symptom-dot"></span>Amețeli sau dezechilibru</li>
+          <li><span class="symptom-dot"></span>Durere cronică fără diagnostic</li>
+        </ul>
+        <div class="hero-card-divider"></div>
+        <a href="#booking" class="btn-primary hero-card-cta">
+          Găsesc soluția pentru mine
+          <iconify-icon icon="solar:arrow-right-linear" width="16" height="16"></iconify-icon>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SELF-ID ═══ -->
+<section class="self-id" id="start" aria-labelledby="selfid-heading">
+  <div class="max-w">
+    <p class="section-label">Unde vrei să începi?</p>
+    <h2 class="section-title reveal" id="selfid-heading">Spune-ne cu ce te putem ajuta</h2>
+    <p class="section-sub reveal">
+      Alege situația care ți se potrivește. Te ghidăm direct spre informațiile și soluțiile relevante.
+    </p>
+    <div class="path-grid">
+      <a href="#conditions" class="path-card reveal">
+        <div class="path-icon">
+          <iconify-icon icon="solar:stethoscope-linear" width="20" height="20"></iconify-icon>
+        </div>
+        <h3>Am durere</h3>
+        <p>Durere de spate, gât, umăr sau membre. Ajutor imediat.</p>
+        <iconify-icon icon="solar:arrow-right-linear" width="18" height="18" class="path-arrow"></iconify-icon>
+      </a>
+      <a href="#conditions" class="path-card reveal">
+        <div class="path-icon">
+          <iconify-icon icon="solar:document-medicine-linear" width="20" height="20"></iconify-icon>
+        </div>
+        <h3>Am un diagnostic</h3>
+        <p>Știu că am hernie, scolioză sau altceva. Vreau tratament.</p>
+        <iconify-icon icon="solar:arrow-right-linear" width="18" height="18" class="path-arrow"></iconify-icon>
+      </a>
+      <a href="#treatments" class="path-card reveal">
+        <div class="path-icon">
+          <iconify-icon icon="solar:health-linear" width="20" height="20"></iconify-icon>
+        </div>
+        <h3>Vreau tratament</h3>
+        <p>Caut alternative non-chirurgicale la operație sau medicamente.</p>
+        <iconify-icon icon="solar:arrow-right-linear" width="18" height="18" class="path-arrow"></iconify-icon>
+      </a>
+      <a href="#booking" class="path-card reveal">
+        <div class="path-icon">
+          <iconify-icon icon="solar:calendar-mark-linear" width="20" height="20"></iconify-icon>
+        </div>
+        <h3>Vreau o consultație</h3>
+        <p>Sunt pregătit să mă programez și să vorbesc cu medicul.</p>
+        <iconify-icon icon="solar:arrow-right-linear" width="18" height="18" class="path-arrow"></iconify-icon>
+      </a>
+      <a href="#doctor" class="path-card reveal">
+        <div class="path-icon">
+          <iconify-icon icon="solar:info-circle-linear" width="20" height="20"></iconify-icon>
+        </div>
+        <h3>Vreau mai multe informații</h3>
+        <p>Vreau să înțeleg abordarea și să am încredere înainte de a mă programa.</p>
+        <iconify-icon icon="solar:arrow-right-linear" width="18" height="18" class="path-arrow"></iconify-icon>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ HOW IT WORKS ═══ -->
+<section class="how" id="how" aria-labelledby="how-heading">
+  <div class="max-w">
+    <div class="section-header-center">
+      <p class="section-label">Procesul nostru</p>
+      <h2 class="section-title reveal" id="how-heading">Ce se întâmplă pas cu pas</h2>
+      <p class="section-sub reveal">
+        Știm că incertitudinea creează anxietate. De aceea îți arătăm exact ce urmează de la prima programare până la recuperare.
+      </p>
+    </div>
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-num">1</div>
+        <iconify-icon icon="solar:chat-round-call-linear" width="18" height="18" class="step-icon"></iconify-icon>
+        <h4>Consultație inițială</h4>
+        <p>Discutăm despre simptomele tale și istoricul medical. Fără judecată, fără presiune.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">2</div>
+        <iconify-icon icon="solar:ruler-angular-linear" width="18" height="18" class="step-icon"></iconify-icon>
+        <h4>Evaluare completă</h4>
+        <p>Examinare clinică și analiza posturii, mișcării și funcționalității.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">3</div>
+        <iconify-icon icon="solar:scanner-linear" width="18" height="18" class="step-icon"></iconify-icon>
+        <h4>Diagnostic precis</h4>
+        <p>POSTUROTEST și instrumente avansate identifică cauza reală a durerii.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">4</div>
+        <iconify-icon icon="solar:document-text-linear" width="18" height="18" class="step-icon"></iconify-icon>
+        <h4>Plan personalizat</h4>
+        <p>Un program de tratament adaptat exact situației tale. Îți explicăm tot.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">5</div>
+        <iconify-icon icon="solar:heart-pulse-linear" width="18" height="18" class="step-icon"></iconify-icon>
+        <h4>Tratament</h4>
+        <p>Ședințe de tratament non-invaziv. Monitorizăm progresul continuu.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">6</div>
+        <iconify-icon icon="solar:star-linear" width="18" height="18" class="step-icon"></iconify-icon>
+        <h4>Recuperare</h4>
+        <p>Control post-tratament și exerciții pentru prevenirea recidivei.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CONDITIONS ═══ -->
+<section class="conditions" id="conditions" aria-labelledby="conditions-heading">
+  <div class="max-w">
+    <p class="section-label">Afecțiuni tratate</p>
+    <h2 class="section-title reveal" id="conditions-heading">Recunoști simptomele?</h2>
+    <p class="section-sub reveal">
+      Găsește afecțiunea ta și descoperă cum o abordăm. Fiecare pagină conține explicații clare și opțiuni de programare directă.
+    </p>
+
+    <div class="search-bar reveal" role="search">
+      <input type="text" id="conditionSearch"
+             placeholder="Caută: hernie de disc, sciatică, durere de gât…"
+             aria-label="Caută afecțiune sau simptom">
+      <button class="search-btn" aria-label="Caută">
+        <iconify-icon icon="solar:magnifer-linear" width="16" height="16"></iconify-icon>
+      </button>
+    </div>
+
+    <div class="conditions-grid" id="conditionsGrid">
+      <a href="#booking" class="condition-card reveal">
+        <span class="condition-tag">Coloana lombară</span>
+        <h3>Durere de spate joasă</h3>
+        <p>Cel mai frecvent motiv de consultație. Cauzată de postură, suprasolicitare, degenerare sau hernie.</p>
+        <div class="symptoms-mini">
+          <span class="symptom-tag">Durere localizată</span>
+          <span class="symptom-tag">Rigiditate matinală</span>
+          <span class="symptom-tag">Durere la mers</span>
+        </div>
+        <span class="condition-link">
+          Află mai mult
+          <iconify-icon icon="solar:arrow-right-linear" width="14" height="14"></iconify-icon>
+        </span>
+      </a>
+      <a href="#booking" class="condition-card reveal">
+        <span class="condition-tag">Disc intervertebral</span>
+        <h3>Hernie de disc</h3>
+        <p>Discul herniat comprimă nervii, cauzând durere, amorțeli sau slăbiciune. Tratament non-chirurgical eficient.</p>
+        <div class="symptoms-mini">
+          <span class="symptom-tag">Durere iradiantă</span>
+          <span class="symptom-tag">Amorțeli</span>
+          <span class="symptom-tag">Furnicături</span>
+        </div>
+        <span class="condition-link">
+          Află mai mult
+          <iconify-icon icon="solar:arrow-right-linear" width="14" height="14"></iconify-icon>
+        </span>
+      </a>
+      <a href="#booking" class="condition-card reveal">
+        <span class="condition-tag">Nerv sciatic</span>
+        <h3>Sciatică</h3>
+        <p>Durere care coboară din spate prin fesă până în picior. Poate fi debilitantă fără tratament adecvat.</p>
+        <div class="symptoms-mini">
+          <span class="symptom-tag">Durere în picior</span>
+          <span class="symptom-tag">Arsuri</span>
+          <span class="symptom-tag">Slăbiciune</span>
+        </div>
+        <span class="condition-link">
+          Află mai mult
+          <iconify-icon icon="solar:arrow-right-linear" width="14" height="14"></iconify-icon>
+        </span>
+      </a>
+      <a href="#booking" class="condition-card reveal">
+        <span class="condition-tag">Coloana cervicală</span>
+        <h3>Durere de gât și cefalee</h3>
+        <p>Tensiunea cervicală cauzează dureri de cap, rigiditate și dureri care coboară în umeri sau brațe.</p>
+        <div class="symptoms-mini">
+          <span class="symptom-tag">Rigiditate gât</span>
+          <span class="symptom-tag">Cefalee</span>
+          <span class="symptom-tag">Durere braț</span>
+        </div>
+        <span class="condition-link">
+          Află mai mult
+          <iconify-icon icon="solar:arrow-right-linear" width="14" height="14"></iconify-icon>
+        </span>
+      </a>
+      <a href="#booking" class="condition-card reveal">
+        <span class="condition-tag">Postură</span>
+        <h3>Scolioză și probleme posturale</h3>
+        <p>Deviațiile coloanei și postura incorectă generează dureri cronice și dezechilibre musculare.</p>
+        <div class="symptoms-mini">
+          <span class="symptom-tag">Umeri inegali</span>
+          <span class="symptom-tag">Oboseală musculară</span>
+          <span class="symptom-tag">Durere cronică</span>
+        </div>
+        <span class="condition-link">
+          Află mai mult
+          <iconify-icon icon="solar:arrow-right-linear" width="14" height="14"></iconify-icon>
+        </span>
+      </a>
+      <a href="#booking" class="condition-card reveal">
+        <span class="condition-tag">Echilibru</span>
+        <h3>Amețeli și dezechilibru</h3>
+        <p>Problemele coloanei cervicale și dezechilibrele posturale pot cauza senzații de amețeală și instabilitate.</p>
+        <div class="symptoms-mini">
+          <span class="symptom-tag">Amețeli</span>
+          <span class="symptom-tag">Instabilitate</span>
+          <span class="symptom-tag">Vertij</span>
+        </div>
+        <span class="condition-link">
+          Află mai mult
+          <iconify-icon icon="solar:arrow-right-linear" width="14" height="14"></iconify-icon>
+        </span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TECHNOLOGY ═══ -->
+<section class="technology" id="technology" aria-labelledby="tech-heading">
+  <div class="max-w">
+    <p class="section-label" style="color:var(--tertiary)">Tehnologie avansată</p>
+    <h2 class="section-title reveal" id="tech-heading" style="color:#fff">
+      Nu ghicim. <em style="font-style:normal;background:linear-gradient(90deg,#8A66E6,#2640D9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Măsurăm.</em>
+    </h2>
+  </div>
+  <div class="tech-grid max-w">
+    <!-- POSTUROTEST — gradient border shell -->
+    <div class="tech-highlight-shell reveal">
+      <div class="tech-highlight">
+        <span class="tech-highlight-badge">
+          <iconify-icon icon="solar:scanner-linear" width="14" height="14"></iconify-icon>
+          POSTUROTEST
+        </span>
+        <h3>Îți identificăm cauza reală a durerii</h3>
+        <p>
+          POSTUROTEST detectează dezechilibre posturale ascunse și cauze ale durerii pe care examinările clasice le ratează adesea. Rezultate vizuale, clare, pe loc.
+        </p>
+        <ul class="tech-benefits">
+          <li>
+            <span class="tech-benefit-check">
+              <iconify-icon icon="solar:check-read-linear" width="12" height="12"></iconify-icon>
+            </span>
+            Analiză computerizată a posturii în timp real
+          </li>
+          <li>
+            <span class="tech-benefit-check">
+              <iconify-icon icon="solar:check-read-linear" width="12" height="12"></iconify-icon>
+            </span>
+            Detectare dezechilibre invizibile clinic
+          </li>
+          <li>
+            <span class="tech-benefit-check">
+              <iconify-icon icon="solar:check-read-linear" width="12" height="12"></iconify-icon>
+            </span>
+            Raport vizual pe care îl înțelegi imediat
+          </li>
+          <li>
+            <span class="tech-benefit-check">
+              <iconify-icon icon="solar:check-read-linear" width="12" height="12"></iconify-icon>
+            </span>
+            Baza unui plan de tratament precis
+          </li>
+        </ul>
+        <a href="#booking" class="btn-primary">
+          <iconify-icon icon="solar:calendar-add-linear" width="16" height="16"></iconify-icon>
+          Programează evaluare POSTUROTEST
+        </a>
+      </div>
+    </div>
+
+    <div class="tech-items reveal">
+      <div class="tech-item">
+        <div class="tech-icon">
+          <iconify-icon icon="solar:ruler-angular-linear" width="22" height="22"></iconify-icon>
+        </div>
+        <div>
+          <h4>Analiză posturală digitală</h4>
+          <p>Măsurăm cu precizie milimetrică deviațiile coloanei și ale bazinului. Știm exact unde este problema.</p>
+        </div>
+      </div>
+      <div class="tech-item">
+        <div class="tech-icon">
+          <iconify-icon icon="solar:bolt-linear" width="22" height="22"></iconify-icon>
+        </div>
+        <div>
+          <h4>Electroterapie avansată</h4>
+          <p>Stimulare musculară și neuromusculară pentru reducerea durerii și recuperarea rapidă a funcției.</p>
+        </div>
+      </div>
+      <div class="tech-item">
+        <div class="tech-icon">
+          <iconify-icon icon="solar:waterdrops-linear" width="22" height="22"></iconify-icon>
+        </div>
+        <div>
+          <h4>Terapie prin unde de șoc</h4>
+          <p>Stimulăm vindecarea țesuturilor profunde fără intervenție chirurgicală. Ideal pentru afecțiuni cronice.</p>
+        </div>
+      </div>
+      <div class="tech-item">
+        <div class="tech-icon">
+          <iconify-icon icon="solar:sun-linear" width="22" height="22"></iconify-icon>
+        </div>
+        <div>
+          <h4>Laser terapeutic</h4>
+          <p>Reduce inflamația și accelerează regenerarea celulară. Tratament nedureros cu rezultate vizibile.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ DOCTOR ═══ -->
+<section class="doctor" id="doctor" aria-labelledby="doctor-heading">
+  <div class="max-w">
+    <p class="section-label">Medicul tău specialist</p>
+    <div class="doctor-grid">
+      <div class="doctor-photo-wrap reveal">
+        <div class="doctor-photo">
+          <!-- Replace with: <img src="doctor-tiron.jpg" alt="Dr. Tiron — Specialist Ortopedie"> -->
+          <div class="doctor-photo-placeholder">
+            <iconify-icon icon="solar:user-id-linear" width="64" height="64" style="color:#C4C9D4"></iconify-icon>
+          </div>
+        </div>
+        <div class="doctor-credentials">
+          <strong>15+</strong>
+          <span>ani experiență</span>
+        </div>
+      </div>
+
+      <div class="doctor-content reveal">
+        <div>
+          <h2 class="doctor-name" id="doctor-heading">Dr. Tiron</h2>
+          <p class="doctor-title">Specialist în Ortopedie și Recuperare Medicală</p>
+        </div>
+
+        <p>
+          Cu peste 15 ani de experiență în diagnosticul și tratamentul afecțiunilor coloanei vertebrale,
+          Dr. Tiron combină medicina clasică cu tehnologia de ultimă generație pentru a oferi soluții
+          non-chirurgicale eficiente și durabile.
+        </p>
+        <p>
+          Filosofia clinicii: fiecare pacient are o cauză unică a durerii. Tratăm cauza, nu simptomul.
+        </p>
+
+        <div>
+          <p style="font-size:11px;font-weight:300;letter-spacing:.08em;text-transform:uppercase;color:#9CA3AF;margin-bottom:14px;">Certificări și formare</p>
+          <div class="cert-list">
+            <div class="cert-item"><span class="cert-dot"></span>Specialist Ortopedie și Traumatologie</div>
+            <div class="cert-item"><span class="cert-dot"></span>Certificat Recuperare Medicală și Kinesiologie</div>
+            <div class="cert-item"><span class="cert-dot"></span>Formare avansată în Terapia Manuală</div>
+            <div class="cert-item"><span class="cert-dot"></span>Certificare POSTUROTEST — Analiză Posturală Digitală</div>
+            <div class="cert-item"><span class="cert-dot"></span>Membru al Colegiului Medicilor din România</div>
+          </div>
+        </div>
+
+        <div>
+          <p style="font-size:11px;font-weight:300;letter-spacing:.08em;text-transform:uppercase;color:#9CA3AF;margin-bottom:14px;">Asociații profesionale</p>
+          <div class="assoc-chips">
+            <span class="assoc-chip">Colegiul Medicilor</span>
+            <span class="assoc-chip">SRMR</span>
+            <span class="assoc-chip">EFORT</span>
+            <span class="assoc-chip">SOR</span>
+          </div>
+        </div>
+
+        <a href="#booking" class="btn-primary doctor-cta">
+          <iconify-icon icon="solar:calendar-add-linear" width="16" height="16"></iconify-icon>
+          Programează consultație cu Dr. Tiron
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ REVIEWS ═══ -->
+<section class="trust" id="reviews" aria-labelledby="reviews-heading">
+  <div class="max-w">
+    <div class="section-header-center">
+      <p class="section-label">Ce spun pacienții</p>
+      <h2 class="section-title reveal" id="reviews-heading">Oameni reali. Rezultate reale.</h2>
+      <p class="section-sub reveal">
+        Mii de pacienți au găsit ușurare de durere la Clinica Tiron. Citește experiențele lor.
+      </p>
+    </div>
+
+    <div class="trust-grid">
+      <div class="trust-card reveal">
+        <div class="trust-stars">★★★★★</div>
+        <blockquote>
+          "Aveam hernie de disc de 3 ani și evitasem operația. Dr. Tiron mi-a identificat cauza reală în prima ședință. După 6 săptămâni de tratament, durerea a dispărut aproape complet."
+        </blockquote>
+        <p class="trust-author">Andrei M. <span>— Hernie de disc L4-L5</span></p>
+      </div>
+      <div class="trust-card reveal">
+        <div class="trust-stars">★★★★★</div>
+        <blockquote>
+          "Sciatica mă împiedica să merg mai mult de 10 minute. POSTUROTEST-ul a descoperit un dezechilibru pe care nimeni nu îl văzuse înainte. Acum alerg 5 km fără durere."
+        </blockquote>
+        <p class="trust-author">Maria P. <span>— Sciatică cronică</span></p>
+      </div>
+      <div class="trust-card reveal">
+        <div class="trust-stars">★★★★★</div>
+        <blockquote>
+          "Eram sceptic față de tratamentele non-chirurgicale. Dr. Tiron mi-a explicat totul clar și mi-a arătat pe ecran exact unde era problema. Am amânat operația și nu regret deloc."
+        </blockquote>
+        <p class="trust-author">Bogdan C. <span>— Scolioză și durere lombară</span></p>
+      </div>
+      <div class="trust-card reveal">
+        <div class="trust-stars">★★★★★</div>
+        <blockquote>
+          "Dureri de gât și cefalee zilnice de 2 ani. Am văzut mulți medici fără rezultat. Clinica Tiron a schimbat totul în 4 ședințe."
+        </blockquote>
+        <p class="trust-author">Elena D. <span>— Cervicalgie și cefalee</span></p>
+      </div>
+    </div>
+
+    <div class="google-badge reveal">
+      <span class="google-badge-stars">★★★★★</span>
+      <span class="google-badge-score">4.9</span>
+      <div class="google-badge-divider"></div>
+      <span class="google-badge-label">Bazat pe 200+ recenzii Google</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ BOOKING ═══ -->
+<section class="booking" id="booking" aria-labelledby="booking-heading">
+  <div class="booking-inner max-w">
+    <div class="booking-left">
+      <p class="section-label" style="color:var(--tertiary)">Primul pas</p>
+      <h2 id="booking-heading" class="reveal">
+        Programează-te astăzi.<br>Fără așteptare.
+      </h2>
+      <p class="reveal">
+        Consultațiile sunt disponibile de luni până vineri. Răspundem în maxim 2 ore. Alege modalitatea care ți se potrivește cel mai bine.
+      </p>
+
+      <div class="contact-options reveal">
+        <a href="tel:+40000000000" class="contact-opt">
+          <div class="contact-opt-icon">
+            <iconify-icon icon="solar:phone-linear" width="20" height="20"></iconify-icon>
+          </div>
+          <div class="contact-opt-text">
+            <strong>Sună direct</strong>
+            <span>0700 000 000 — Luni–Vineri 8:00–18:00</span>
+          </div>
+          <iconify-icon icon="solar:arrow-right-linear" width="16" height="16" class="contact-opt-arrow"></iconify-icon>
+        </a>
+        <a href="https://wa.me/40000000000" class="contact-opt" target="_blank" rel="noopener noreferrer">
+          <div class="contact-opt-icon">
+            <iconify-icon icon="solar:chat-round-dots-linear" width="20" height="20"></iconify-icon>
+          </div>
+          <div class="contact-opt-text">
+            <strong>WhatsApp</strong>
+            <span>Trimite un mesaj — răspundem rapid</span>
+          </div>
+          <iconify-icon icon="solar:arrow-right-linear" width="16" height="16" class="contact-opt-arrow"></iconify-icon>
+        </a>
+        <a href="mailto:contact@clinicatiron.ro" class="contact-opt">
+          <div class="contact-opt-icon">
+            <iconify-icon icon="solar:letter-linear" width="20" height="20"></iconify-icon>
+          </div>
+          <div class="contact-opt-text">
+            <strong>Email</strong>
+            <span>contact@clinicatiron.ro</span>
+          </div>
+          <iconify-icon icon="solar:arrow-right-linear" width="16" height="16" class="contact-opt-arrow"></iconify-icon>
+        </a>
+        <a href="#booking-form" class="contact-opt">
+          <div class="contact-opt-icon">
+            <iconify-icon icon="solar:bell-bing-linear" width="20" height="20"></iconify-icon>
+          </div>
+          <div class="contact-opt-text">
+            <strong>Solicită apel invers</strong>
+            <span>Te sunăm noi în intervalul ales</span>
+          </div>
+          <iconify-icon icon="solar:arrow-right-linear" width="16" height="16" class="contact-opt-arrow"></iconify-icon>
+        </a>
+      </div>
+    </div>
+
+    <!-- Booking form with gradient border shell -->
+    <div class="booking-form-shell reveal" id="booking-form">
+      <div class="booking-form">
+        <h3>
+          <iconify-icon icon="solar:calendar-add-linear" width="18" height="18" style="color:var(--tertiary)"></iconify-icon>
+          Rezervă o consultație
+        </h3>
+        <form novalidate id="bookingForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="name">Nume *</label>
+              <input type="text" id="name" name="name" placeholder="Ion Popescu" autocomplete="name" required>
+            </div>
+            <div class="form-group">
+              <label for="phone">Telefon *</label>
+              <input type="tel" id="phone" name="phone" placeholder="07xx xxx xxx" autocomplete="tel" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="email@exemplu.ro" autocomplete="email">
+          </div>
+          <div class="form-group">
+            <label for="reason">Motivul consultației</label>
+            <select id="reason" name="reason">
+              <option value="" disabled selected>Selectează afecțiunea</option>
+              <option value="back">Durere de spate</option>
+              <option value="neck">Durere de gât</option>
+              <option value="disc">Hernie de disc</option>
+              <option value="sciatica">Sciatică</option>
+              <option value="posture">Probleme posturale</option>
+              <option value="vertigo">Amețeli / dezechilibru</option>
+              <option value="other">Altele</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="date">Data preferată</label>
+            <input type="date" id="date" name="date">
+          </div>
+          <button type="submit" class="btn-primary form-submit">
+            <iconify-icon icon="solar:arrow-right-linear" width="16" height="16"></iconify-icon>
+            Trimite cererea de programare
+          </button>
+          <p class="form-note">Te contactăm în maxim 2 ore pentru confirmare. Datele tale sunt confidențiale.</p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="footer-grid max-w">
+    <div class="footer-brand">
+      <a href="/" class="footer-logo">
+        <iconify-icon icon="solar:hospital-linear" width="18" height="18" style="color:var(--secondary)"></iconify-icon>
+        Clinica <span>Tiron</span>
+      </a>
+      <p>Specialist în coloana vertebrală, diagnostic avansat și tratament non-chirurgical. Clinică privată cu experiență de peste 15 ani.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Afecțiuni</h5>
+      <ul>
+        <li><a href="#conditions">Durere de spate</a></li>
+        <li><a href="#conditions">Hernie de disc</a></li>
+        <li><a href="#conditions">Sciatică</a></li>
+        <li><a href="#conditions">Durere de gât</a></li>
+        <li><a href="#conditions">Scolioză</a></li>
+        <li><a href="#conditions">Amețeli</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Clinica</h5>
+      <ul>
+        <li><a href="#doctor">Dr. Tiron</a></li>
+        <li><a href="#technology">Tehnologie</a></li>
+        <li><a href="#treatments">Tratamente</a></li>
+        <li><a href="#reviews">Recenzii</a></li>
+        <li><a href="#how">Cum funcționează</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Contact</h5>
+      <ul>
+        <li><a href="tel:+40000000000">0700 000 000</a></li>
+        <li><a href="mailto:contact@clinicatiron.ro">Email</a></li>
+        <li><a href="https://wa.me/40000000000" target="_blank" rel="noopener">WhatsApp</a></li>
+        <li><a href="#booking">Programare online</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom max-w">
+    <span>© 2024 Clinica Tiron. Toate drepturile rezervate.</span>
+    <span>Politica de confidențialitate · GDPR</span>
+  </div>
+</footer>
+
+<!-- Sticky Mobile CTA -->
+<div class="sticky-mobile" id="stickyMobile" role="complementary" aria-label="Acțiuni rapide">
+  <a href="tel:+40000000000" class="sticky-phone" aria-label="Sună acum">
+    <iconify-icon icon="solar:phone-linear" width="22" height="22"></iconify-icon>
+  </a>
+  <a href="#booking" class="btn-primary">
+    <iconify-icon icon="solar:calendar-add-linear" width="16" height="16"></iconify-icon>
+    Programează Consultație
+  </a>
+</div>
+
+<script type="module" src="/src/main.js"></script>
+<script>
+// closeMobile() stub — overridden by src/main.js once module loads
+function closeMobile() {
+  document.getElementById('mobileMenu')?.classList.remove('open');
+  document.getElementById('hamburger')?.setAttribute('aria-expanded', 'false');
+  document.body.style.overflow = '';
+}
+
+</script>
+</body>
+</html>
