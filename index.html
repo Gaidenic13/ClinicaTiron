@@ -1464,44 +1464,194 @@
     transform: translateY(28px);
   }
 
-  /* ─── RESPONSIVE ─── */
-  @media (max-width: 1024px) {
-    .path-grid { grid-template-columns: repeat(3, 1fr); }
-    .steps { grid-template-columns: repeat(3, 1fr); }
-    .step { border-bottom: 1px solid var(--border); }
-    .step:nth-child(3), .step:nth-child(6) { border-right: none; }
-    .conditions-grid { grid-template-columns: repeat(2, 1fr); }
+  /* ═══════════════════════════════════════════════════
+     RESPONSIVE — mobile-first, full device coverage
+     320px  small phone (SE 1st gen)
+     375px  iPhone standard
+     480px  large phone landscape / small tablet
+     640px  tablet portrait breakpoint
+     768px  iPad portrait
+     900px  tablet landscape
+     1024px small laptop / iPad Pro landscape
+     1280px laptop
+     1440px desktop baseline
+     1920px large desktop
+     2560px+ ultrawide / 4K
+     ═══════════════════════════════════════════════════ */
+
+  /* ── Fluid section padding (all sections) ─────────── */
+  .self-id, .how, .conditions, .technology, .doctor, .trust, .booking {
+    padding-left:  clamp(16px, 4vw, 32px);
+    padding-right: clamp(16px, 4vw, 32px);
+    padding-top:    clamp(48px, 7vw, 88px);
+    padding-bottom: clamp(48px, 7vw, 88px);
+  }
+  nav { padding: 0 clamp(16px, 4vw, 32px); }
+  footer { padding: clamp(32px, 5vw, 56px) clamp(16px, 4vw, 32px) clamp(20px, 3vw, 32px); }
+  .max-w { padding-left: 0; padding-right: 0; }
+
+  /* ── Large desktop (1440px+) ─────────────────────── */
+  @media (min-width: 1440px) {
+    .hero { padding: 120px clamp(32px, 6vw, 80px) 96px; }
+    .section-title { font-size: clamp(40px, 3.5vw, 56px); }
+    .trust-grid { grid-template-columns: repeat(4, 1fr); }
+    .path-grid  { grid-template-columns: repeat(5, 1fr); }
+    .steps      { grid-template-columns: repeat(6, 1fr); }
+  }
+
+  /* ── 1280–1439px (standard laptop) ──────────────── */
+  @media (max-width: 1439px) and (min-width: 1280px) {
+    .hero h1 { font-size: 60px; }
+  }
+
+  /* ── 1025–1279px (small laptop / large tablet landscape) */
+  @media (max-width: 1279px) and (min-width: 1025px) {
+    .hero h1 { font-size: 52px; }
+    .path-grid  { grid-template-columns: repeat(3, 1fr); }
     .trust-grid { grid-template-columns: repeat(2, 1fr); }
   }
 
-  @media (max-width: 900px) {
-    .hero { grid-template-columns: 1fr; padding-top: 88px; min-height: unset; padding-bottom: 64px; }
-    .hero-visual { display: none; }
-    .tech-grid { grid-template-columns: 1fr; }
-    .doctor-grid { grid-template-columns: 1fr; }
-    .doctor-photo-wrap { max-width: 280px; }
-    .booking-inner { grid-template-columns: 1fr; }
-    .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+  /* ── 1024px tablet landscape ─────────────────────── */
+  @media (max-width: 1024px) {
+    .path-grid        { grid-template-columns: repeat(3, 1fr); }
+    .steps            { grid-template-columns: repeat(3, 1fr); }
+    .step             { border-bottom: 1px solid var(--border); }
+    .step:nth-child(3),
+    .step:nth-child(6) { border-right: none; }
+    .conditions-grid  { grid-template-columns: repeat(2, 1fr); }
+    .trust-grid       { grid-template-columns: repeat(2, 1fr); }
+    .footer-grid      { grid-template-columns: 1fr 1fr; gap: 32px; }
+    .tech-highlight   { padding: 28px 24px; }
   }
 
+  /* ── 900px tablet portrait / small laptop ────────── */
+  @media (max-width: 900px) {
+    .hero {
+      grid-template-columns: 1fr;
+      padding-top: 88px;
+      min-height: unset;
+      padding-bottom: 64px;
+    }
+    .hero-visual     { display: none; }
+    .tech-grid       { grid-template-columns: 1fr; }
+    .doctor-grid     { grid-template-columns: 1fr; gap: 40px; }
+    .doctor-photo-wrap { max-width: 260px; }
+    .booking-inner   { grid-template-columns: 1fr; gap: 40px; }
+
+    /* CSS bubble halos — scale down for tablet */
+    .bubble-1 { width: 380px; height: 380px; }
+    .bubble-2 { width: 300px; height: 300px; }
+    .bubble-3 { width: 220px; height: 220px; }
+    .bubble-4 { width: 160px; height: 160px; }
+    .bubble-5 { width: 120px; height: 120px; }
+  }
+
+  /* ── 768px iPad portrait ──────────────────────────── */
+  @media (max-width: 768px) {
+    .path-grid        { grid-template-columns: repeat(2, 1fr); }
+    .steps            { grid-template-columns: repeat(2, 1fr); }
+    .step:nth-child(2n) { border-right: none; }
+    .step:nth-child(3)  { border-right: 1px solid var(--border); }
+
+    .hero h1 { font-size: 44px; }
+    .hero-trust { gap: 16px 24px; }
+    .trust-item strong { font-size: 20px; }
+
+    .doctor-grid { grid-template-columns: 1fr; }
+    .booking-form { padding: 28px 24px; }
+    .form-row { grid-template-columns: 1fr 1fr; }
+
+    /* CSS bubble halos — tablet portrait */
+    .bubble-1 { width: 320px; height: 320px; top: -80px; left: -60px; }
+    .bubble-2 { width: 260px; height: 260px; top: 20%; right: -40px; }
+    .bubble-3 { width: 180px; height: 180px; }
+    .bubble-4 { width: 130px; height: 130px; }
+    .bubble-5 { width: 100px; height: 100px; }
+  }
+
+  /* ── 640px large mobile / small tablet ───────────── */
   @media (max-width: 640px) {
-    .nav-links { display: none; }
-    .hamburger { display: flex; }
+    .nav-links    { display: none; }
+    .hamburger    { display: flex; }
     .sticky-mobile { display: flex; }
-    body { padding-bottom: 74px; }
-    .path-grid { grid-template-columns: 1fr; }
-    .steps { grid-template-columns: 1fr; }
-    .step { border-right: none; }
-    .conditions-grid { grid-template-columns: 1fr; }
-    .trust-grid { grid-template-columns: 1fr; }
-    .footer-grid { grid-template-columns: 1fr; gap: 28px; }
-    .form-row { grid-template-columns: 1fr; }
-    nav { padding: 0 20px; }
-    .hero { padding: 88px 20px 56px; }
-    .self-id, .how, .conditions, .technology, .doctor, .trust, .booking { padding-left: 20px; padding-right: 20px; }
-    footer { padding: 40px 20px 28px; }
-    .booking-form { padding: 24px 20px; }
-    .hero h1 { font-size: 40px; }
+    body          { padding-bottom: 74px; }
+
+    .path-grid        { grid-template-columns: 1fr; }
+    .steps            { grid-template-columns: 1fr; }
+    .step             { border-right: none; border-bottom: 1px solid var(--border); }
+    .conditions-grid  { grid-template-columns: 1fr; }
+    .trust-grid       { grid-template-columns: 1fr; }
+    .footer-grid      { grid-template-columns: 1fr; gap: 24px; }
+    .form-row         { grid-template-columns: 1fr; }
+
+    .hero         { padding: 88px 16px 56px; }
+    .hero h1      { font-size: 38px; }
+    .hero-sub     { font-size: 15px; }
+    .hero-ctas    { flex-direction: column; align-items: flex-start; gap: 14px; }
+    .hero-ctas .btn-primary { width: 100%; justify-content: center; }
+    .hero-trust   { gap: 14px 20px; }
+    .trust-item strong { font-size: 18px; }
+
+    .section-title { font-size: clamp(24px, 7vw, 36px); }
+    .section-sub   { font-size: 14px; margin-bottom: 32px; }
+
+    .booking-form  { padding: 20px 16px; }
+    .tech-highlight { padding: 24px 20px; }
+
+    /* CSS bubble halos — mobile */
+    .bubble-1 { width: 260px; height: 260px; top: -60px; left: -50px; filter: blur(40px); }
+    .bubble-2 { width: 200px; height: 200px; top: 15%; right: -30px; filter: blur(36px); }
+    .bubble-3 { width: 150px; height: 150px; filter: blur(32px); }
+    .bubble-4 { width: 110px; height: 110px; filter: blur(28px); }
+    .bubble-5 { width:  90px; height:  90px; filter: blur(24px); }
+  }
+
+  /* ── 480px large phone landscape ─────────────────── */
+  @media (max-width: 480px) {
+    .hero h1 { font-size: 34px; }
+    .hero-badge { font-size: 11px; }
+    .btn-primary { font-size: 13px; padding: 11px 18px; }
+
+    .bubble-1 { width: 220px; height: 220px; }
+    .bubble-2 { width: 170px; height: 170px; }
+    .bubble-3 { width: 120px; height: 120px; }
+    .bubble-4 { display: none; }
+    .bubble-5 { display: none; }
+  }
+
+  /* ── 375px standard phone ─────────────────────────── */
+  @media (max-width: 375px) {
+    .hero h1 { font-size: 30px; letter-spacing: -0.02em; }
+    .hero-sub { font-size: 14px; }
+
+    .bubble-1 { width: 190px; height: 190px; }
+    .bubble-2 { width: 140px; height: 140px; }
+    .bubble-3 { display: none; }
+  }
+
+  /* ── 320px smallest phone ─────────────────────────── */
+  @media (max-width: 320px) {
+    .hero h1 { font-size: 26px; }
+    nav { padding: 0 12px; }
+    .nav-logo { font-size: 15px; }
+    .btn-primary { font-size: 12px; padding: 10px 14px; }
+    .bubble-1 { width: 160px; height: 160px; }
+    .bubble-2 { display: none; }
+  }
+
+  /* ── Ultrawide / 4K (1920px+) ─────────────────────── */
+  @media (min-width: 1920px) {
+    .max-w { max-width: 1320px; }
+    .hero h1 { font-size: 80px; }
+    .hero { padding: 130px clamp(32px, 8vw, 120px) 100px; }
+    .section-title { font-size: clamp(44px, 3vw, 60px); }
+
+    /* Larger halos for big screens */
+    .bubble-1 { width: 680px; height: 680px; }
+    .bubble-2 { width: 520px; height: 520px; }
+    .bubble-3 { width: 380px; height: 380px; }
+    .bubble-4 { width: 280px; height: 280px; }
+    .bubble-5 { width: 220px; height: 220px; }
   }
 </style>
 </head>

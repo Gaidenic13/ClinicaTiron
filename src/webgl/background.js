@@ -1,12 +1,6 @@
 /**
  * Clinica Tiron — Neuform-style translucent bubble spheres
- *
- * Fixes applied:
- *  1. THREE.NormalBlending   — glass reads through to background, not additive glow
- *  2. Correct sphere scale   — radius 1.5–2.5, camera z=5 to match
- *  3. Canvas scoped to hero  — position:absolute inside .hero, not fixed page-wide
- *  4. Higher fresnel alpha   — rim 0.80, core 0.10 so glass edge is visible on light bg
- *  5. Lavender #8A86E5 color — matches Neuform palette
+ * v2 — smaller spheres, more movement, device-responsive sizing
  */
 
 import * as THREE from 'three';
@@ -16,7 +10,7 @@ import { gsap } from 'gsap';
 
 const BUBBLE_VERT = /* glsl */`
   uniform float uTime;
-  uniform float uPhase;   // per-bubble phase offset
+  uniform float uPhase;
   uniform vec2  uMouse;
 
   varying vec3  vNormal;
@@ -27,63 +21,66 @@ const BUBBLE_VERT = /* glsl */`
 
     vec3 pos = position;
 
-    // Slow breathing pulse — each bubble breathes at its own phase
-    float breath = sin(uTime * 0.45 + uPhase) * 0.028;
+    // More pronounced breathing — was 0.028, now 0.045
+    float breath = sin(uTime * 0.55 + uPhase) * 0.045;
     pos += normal * breath;
 
-    // Subtle pointer drift — shape warps very slightly toward mouse
-    pos.x += uMouse.x * 0.018;
-    pos.y += uMouse.y * 0.014;
+    // Stronger pointer warp — was 0.018/0.014, now 0.032/0.026
+    pos.x += uMouse.x * 0.032;
+    pos.y += uMouse.y * 0.026;
 
     vec4 mvPos = modelViewMatrix * vec4(pos, 1.0);
-
-    // View direction for fresnel
-    vViewDir = normalize(-mvPos.xyz);
-
+    vViewDir   = normalize(-mvPos.xyz);
     gl_Position = projectionMatrix * mvPos;
   }
 `;
 
 const BUBBLE_FRAG = /* glsl */`
-  uniform vec3  uColor;   // lavender base ~#8A86E5
+  uniform vec3  uColor;
   uniform float uTime;
-  uniform float uOpacity; // master fade for entrance animation
+  uniform float uPhase;
+  uniform float uOpacity;
 
   varying vec3  vNormal;
   varying vec3  vViewDir;
 
   void main() {
-    vec3 n = normalize(vNormal);
-
-    // Fresnel — bright rim, transparent core
-    // dot(n, viewDir): 1 at centre facing camera, 0 at silhouette edge
+    vec3  n       = normalize(vNormal);
     float facing  = max(dot(n, vViewDir), 0.0);
     float fresnel = pow(1.0 - facing, 3.2);
 
-    // Glass: nearly transparent centre, strong glassy rim
-    // Core: ~0.10 alpha — you see through the bubble but it's present
-    // Rim:  ~0.90 alpha — reads as a solid glass edge
-    float alpha = mix(0.10, 0.90, fresnel);
+    float alpha  = mix(0.10, 0.90, fresnel);
 
-    // Rim slightly brightens toward white (specular highlight)
+    // Slightly warmer rim toward white
     vec3 rimCol  = mix(uColor, vec3(1.0), fresnel * 0.55);
 
-    // Tiny inner iridescent shimmer — shifts hue slightly over time
-    float shimmer = sin(uTime * 0.6 + facing * 3.14) * 0.06;
+    // Iridescent shimmer per bubble phase
+    float shimmer = sin(uTime * 0.7 + uPhase + facing * 3.14) * 0.07;
     rimCol += shimmer;
 
     gl_FragColor = vec4(rimCol, alpha * uOpacity);
   }
 `;
 
-// ─── Bubble config ────────────────────────────────────────────────────────────
-
-const BUBBLES = [
-  // { x, y, z, radius, phase, speed }
-  { x: -1.8, y:  0.5, z:  0.0, radius: 2.2, phase: 0.0,  speed: 0.012 },
-  { x:  2.2, y: -0.3, z: -0.8, radius: 1.6, phase: 2.1,  speed: 0.018 },
-  { x:  0.4, y:  1.8, z: -1.2, radius: 1.2, phase: 4.4,  speed: 0.009 },
+// ─── Bubble base config (desktop 1440px baseline) ────────────────────────────
+// Radii are 20% smaller than previous version (was 2.2 / 1.6 / 1.2)
+const BASE_BUBBLES = [
+  { x: -1.6, y:  0.5, z:  0.0, radius: 1.76, phase: 0.0,  speed: 0.016 },
+  { x:  2.0, y: -0.2, z: -0.8, radius: 1.28, phase: 2.1,  speed: 0.022 },
+  { x:  0.3, y:  1.6, z: -1.2, radius: 0.96, phase: 4.4,  speed: 0.012 },
 ];
+
+// ─── Responsive scale factor based on viewport width ─────────────────────────
+function getResponsiveScale(width) {
+  if (width <= 375)  return 0.52;   // small mobile (SE, mini)
+  if (width <= 480)  return 0.58;   // mobile portrait
+  if (width <= 768)  return 0.68;   // tablet portrait / large mobile landscape
+  if (width <= 1024) return 0.80;   // tablet landscape / small laptop
+  if (width <= 1280) return 0.90;   // laptop
+  if (width <= 1440) return 1.00;   // desktop baseline
+  if (width <= 1920) return 1.12;   // large desktop
+  return 1.20;                       // 4K / ultrawide
+}
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 
@@ -91,13 +88,15 @@ const initWebGL = () => {
   const canvas = document.getElementById('webgl-canvas');
   if (!canvas) return;
 
+  canvas.style.background = 'transparent';
+
   // ── Renderer ─────────────────────────────────────────────────────────────
   let renderer;
   try {
     renderer = new THREE.WebGLRenderer({
       canvas,
-      alpha:     true,    // transparent bg — hero background shows through
-      antialias: true,    // clean silhouette edges for glass spheres
+      alpha:     true,
+      antialias: true,
       powerPreference: 'default',
     });
   } catch {
@@ -105,57 +104,66 @@ const initWebGL = () => {
     return;
   }
 
-  // Size renderer to hero container, not full window
   const hero = canvas.closest('.hero') || canvas.parentElement;
-  const W = hero ? hero.clientWidth  : window.innerWidth;
-  const H = hero ? hero.clientHeight : window.innerHeight;
+  const getSize = () => ({
+    w: hero ? hero.clientWidth  : window.innerWidth,
+    h: hero ? hero.clientHeight : window.innerHeight,
+  });
 
+  let { w, h } = getSize();
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.setSize(W, H);
-  renderer.setClearColor(0x000000, 0); // fully transparent clear
+  renderer.setSize(w, h);
+  renderer.setClearColor(0x000000, 0);
 
   // ── Scene + Camera ────────────────────────────────────────────────────────
   const scene  = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(45, W / H, 0.1, 100);
-  camera.position.z = 5; // correct distance for radius 1.5–2.5 spheres
+  const camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 100);
+  camera.position.z = 5;
 
   // ── Shared geometry ───────────────────────────────────────────────────────
-  // High-poly for smooth silhouette — glass edges need clean curves
   const sharedGeo = new THREE.SphereGeometry(1, 128, 128);
 
   // ── Build bubbles ─────────────────────────────────────────────────────────
-  const bubbleMeshes = BUBBLES.map((cfg) => {
+  const scale = getResponsiveScale(w);
+
+  const bubbleMeshes = BASE_BUBBLES.map((cfg) => {
     const mat = new THREE.ShaderMaterial({
       uniforms: {
         uTime:    { value: 0 },
         uPhase:   { value: cfg.phase },
         uMouse:   { value: new THREE.Vector2(0, 0) },
-        uColor:   { value: new THREE.Color(0x8A86E5) }, // lavender #8A86E5
-        uOpacity: { value: 0 },                         // starts invisible — GSAP fades in
+        uColor:   { value: new THREE.Color(0x8A86E5) },
+        uOpacity: { value: 0 },
       },
       vertexShader:   BUBBLE_VERT,
       fragmentShader: BUBBLE_FRAG,
       transparent:    true,
       depthWrite:     false,
-      depthTest:      false,  // prevents bubbles clipping each other
-      blending:       THREE.NormalBlending, // ← glass, not additive glow
+      depthTest:      false,
+      blending:       THREE.NormalBlending,
       side:           THREE.FrontSide,
     });
 
     const mesh = new THREE.Mesh(sharedGeo, mat);
-    mesh.scale.setScalar(cfg.radius);
-    mesh.position.set(cfg.x, cfg.y, cfg.z);
-    mesh.userData = { baseX: cfg.x, baseY: cfg.y, speed: cfg.speed, phase: cfg.phase };
+    mesh.scale.setScalar(cfg.radius * scale);
+    mesh.position.set(cfg.x * scale, cfg.y * scale, cfg.z);
+    mesh.userData = {
+      baseX:  cfg.x,
+      baseY:  cfg.y,
+      radius: cfg.radius,
+      speed:  cfg.speed,
+      phase:  cfg.phase,
+    };
     scene.add(mesh);
     return mesh;
   });
 
-  // ── GSAP entrance — staggered fade-in ────────────────────────────────────
+  // ── Entrance — staggered fade-in ─────────────────────────────────────────
   bubbleMeshes.forEach((mesh, i) => {
     gsap.to(mesh.material.uniforms.uOpacity, {
       value:    1,
       duration: 1.6,
-      delay:    0.3 + i * 0.4,
+      delay:    0.3 + i * 0.35,
       ease:     'power2.inOut',
     });
   });
@@ -164,27 +172,32 @@ const initWebGL = () => {
   const mouse  = new THREE.Vector2(0, 0);
   const target = new THREE.Vector2(0, 0);
 
-  window.addEventListener('mousemove', (e) => {
-    // Normalize to -1…1 relative to the hero container
+  const updateMouse = (cx, cy) => {
     const rect = (hero || canvas).getBoundingClientRect();
-    mouse.x =  ((e.clientX - rect.left)  / rect.width  - 0.5) * 2;
-    mouse.y = -((e.clientY - rect.top)   / rect.height - 0.5) * 2;
-  });
-
+    mouse.x =  ((cx - rect.left)  / rect.width  - 0.5) * 2;
+    mouse.y = -((cy - rect.top)   / rect.height - 0.5) * 2;
+  };
+  window.addEventListener('mousemove', (e) => updateMouse(e.clientX, e.clientY));
   window.addEventListener('touchmove', (e) => {
-    const t    = e.touches[0];
-    const rect = (hero || canvas).getBoundingClientRect();
-    mouse.x =  ((t.clientX - rect.left)  / rect.width  - 0.5) * 2;
-    mouse.y = -((t.clientY - rect.top)   / rect.height - 0.5) * 2;
+    updateMouse(e.touches[0].clientX, e.touches[0].clientY);
   }, { passive: true });
 
-  // ── Resize ────────────────────────────────────────────────────────────────
+  // ── Resize — re-scale spheres to new viewport ─────────────────────────────
   const ro = new ResizeObserver(() => {
-    const w = hero ? hero.clientWidth  : window.innerWidth;
-    const h = hero ? hero.clientHeight : window.innerHeight;
-    renderer.setSize(w, h);
-    camera.aspect = w / h;
+    const { w: nw, h: nh } = getSize();
+    renderer.setSize(nw, nh);
+    camera.aspect = nw / nh;
     camera.updateProjectionMatrix();
+
+    const newScale = getResponsiveScale(nw);
+    bubbleMeshes.forEach((mesh) => {
+      const { radius, baseX, baseY } = mesh.userData;
+      mesh.scale.setScalar(radius * newScale);
+      mesh.userData.currentScale = newScale;
+      // Reposition so bubbles stay in frame on narrow screens
+      mesh.position.x = mesh.userData.baseX * newScale;
+      mesh.position.y = mesh.userData.baseY * newScale;
+    });
   });
   ro.observe(hero || document.body);
 
@@ -195,24 +208,24 @@ const initWebGL = () => {
     requestAnimationFrame(tick);
     const t = clock.getElapsedTime();
 
-    // Smooth mouse drift
-    target.x += (mouse.x - target.x) * 0.04;
-    target.y += (mouse.y - target.y) * 0.03;
+    // Smoother, stronger drift — was 0.04/0.03
+    target.x += (mouse.x - target.x) * 0.055;
+    target.y += (mouse.y - target.y) * 0.045;
 
     bubbleMeshes.forEach((mesh) => {
       const { baseX, baseY, speed, phase } = mesh.userData;
+      const s = mesh.userData.currentScale ?? getResponsiveScale(getSize().w);
 
-      // Update per-bubble time uniform
       mesh.material.uniforms.uTime.value  = t;
       mesh.material.uniforms.uMouse.value.copy(target);
 
-      // Slow float: each bubble drifts independently
-      mesh.position.x = baseX + Math.sin(t * speed + phase)        * 0.18 + target.x * 0.12;
-      mesh.position.y = baseY + Math.sin(t * speed * 0.7 + phase)  * 0.14 + target.y * 0.10;
+      // More movement — float amplitude was 0.18/0.14, now 0.30/0.22
+      mesh.position.x = baseX * s + Math.sin(t * speed + phase)       * 0.30 + target.x * 0.18;
+      mesh.position.y = baseY * s + Math.sin(t * speed * 0.65 + phase) * 0.22 + target.y * 0.14;
 
-      // Very slow rotation for iridescent shimmer variation
-      mesh.rotation.y = t * speed * 0.5;
-      mesh.rotation.z = t * speed * 0.3;
+      // More rotation — was speed*0.5, now speed*1.2
+      mesh.rotation.y = t * speed * 1.2;
+      mesh.rotation.z = t * speed * 0.8;
     });
 
     renderer.render(scene, camera);
@@ -220,7 +233,6 @@ const initWebGL = () => {
 
   tick();
 
-  // ── Cleanup (for SPA hot-reload) ──────────────────────────────────────────
   return () => {
     ro.disconnect();
     sharedGeo.dispose();
