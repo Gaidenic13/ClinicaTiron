@@ -132,7 +132,7 @@ const initWebGL = () => {
         uTime:    { value: 0 },
         uPhase:   { value: cfg.phase },
         uMouse:   { value: new THREE.Vector2(0, 0) },
-        uColor:   { value: new THREE.Color(0x8A86E5) },
+        uColor:   { value: new THREE.Color(0x0A84D8) },
         uOpacity: { value: 0 },
       },
       vertexShader:   BUBBLE_VERT,
