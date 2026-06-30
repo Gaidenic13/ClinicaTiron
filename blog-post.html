@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Dynamic meta — overwritten by blog.js after article loads -->
+<title>Articol Medical | Clinica Tiron – Ozonoterapie București</title>
+<meta name="description" content="Articol medical de specialitate de la Clinica Tiron București.">
+<link rel="canonical" href="https://clinicatiron.ro/blog-post.html">
+
+<!-- Open Graph placeholders — overwritten by blog.js -->
+<meta property="og:type"        content="article">
+<meta property="og:title"       content="Articol Medical | Clinica Tiron">
+<meta property="og:description" content="">
+<meta property="og:url"         content="">
+<meta property="og:locale"      content="ro_RO">
+<meta name="twitter:card"       content="summary_large_image">
+
+<!-- Iconify Solar -->
+<script src="https://cdn.jsdelivr.net/npm/iconify-icon@2/dist/iconify-icon.min.js"></script>
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --primary:        #111827;
+    --secondary:      #0A84D8;
+    --tertiary:       #38A8F5;
+    --neutral:        #FFFFFF;
+    --bg:             #FAFAFA;
+    --surface:        #111827;
+    --text-primary:   #111827;
+    --text-secondary: #0A84D8;
+    --border:         #E5E7EB;
+    --radius-full:    9999px;
+    --radius-md:      0px;
+    --shadow-glow:    rgba(0,0,0,0) 0px 0px 0px 0px, rgba(0,0,0,0) 0px 0px 0px 0px, rgb(10,132,216) 0px 0px 10px 0px, rgba(0,0,0,0) 0px 0px 0px 0px, rgba(0,0,0,0) 0px 0px 0px 0px, rgba(0,0,0,0.1) 0px 0px 20px 0px;
+    --blur:           12px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+
+  iconify-icon { display: inline-flex; vertical-align: middle; }
+
+  .max-w { max-width: 1120px; margin-left: auto; margin-right: auto; }
+
+  /* ─── NAV (identical to blog.html) ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(255,255,255,0.88);
+    backdrop-filter: blur(var(--blur));
+    -webkit-backdrop-filter: blur(var(--blur));
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .nav-logo {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--primary);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .nav-logo span { color: var(--secondary); }
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: color 150ms ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .nav-links a:hover,
+  .nav-links a.active { color: var(--secondary); }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--primary);
+    color: var(--neutral);
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 1;
+    padding: 12px 22px;
+    border-radius: var(--radius-full);
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 300ms cubic-bezier(0.4,0,0.2,1), box-shadow 300ms cubic-bezier(0.4,0,0.2,1);
+    white-space: nowrap;
+  }
+  .btn-primary:hover {
+    background: var(--secondary);
+    box-shadow: var(--shadow-glow);
+  }
+  .hamburger {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px; height: 40px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: var(--primary);
+    transition: color 150ms;
+  }
+  .hamburger:hover { color: var(--secondary); }
+
+  /* ─── MOBILE MENU ─── */
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: rgba(255,255,255,0.97);
+    backdrop-filter: blur(var(--blur));
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 36px;
+    opacity: 0;
+    transition: opacity 300ms ease;
+  }
+  .mobile-menu.open { display: flex; opacity: 1; }
+  .mobile-menu a {
+    font-size: 24px;
+    font-weight: 300;
+    color: var(--primary);
+    text-decoration: none;
+    letter-spacing: -0.015em;
+    transition: color 150ms ease;
+  }
+  .mobile-menu a:hover { color: var(--secondary); }
+  .mobile-close {
+    position: absolute;
+    top: 20px; right: 28px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 150ms;
+  }
+  .mobile-close:hover { color: var(--secondary); }
+
+  /* ─── BREADCRUMB ─── */
+  .breadcrumb {
+    background: var(--neutral);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 32px;
+    margin-top: 64px; /* below fixed nav */
+  }
+  .breadcrumb-inner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 200;
+    color: #9CA3AF;
+  }
+  .breadcrumb-inner a {
+    color: var(--secondary);
+    text-decoration: none;
+    transition: opacity 150ms ease;
+  }
+  .breadcrumb-inner a:hover { opacity: .75; }
+  .breadcrumb-sep { opacity: .5; }
+
+  /* ─── POST HERO (dark, like .booking) ─── */
+  .post-hero {
+    background: var(--surface);
+    color: white;
+    padding: 72px 32px 64px;
+    position: relative;
+    overflow: hidden;
+  }
+  .post-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 15% 60%, rgba(10,132,216,.20) 0%, transparent 50%),
+      radial-gradient(ellipse at 85% 30%, rgba(56,168,245,.08) 0%, transparent 40%);
+    pointer-events: none;
+  }
+  .post-hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+  }
+  .post-hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 760px;
+  }
+
+  .post-category-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    font-weight: 300;
+    padding: 5px 12px;
+    border-radius: var(--radius-full);
+    background: rgba(10,132,216,.15);
+    border: 1px solid rgba(10,132,216,.25);
+    color: var(--tertiary);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .post-title {
+    font-size: clamp(26px, 4vw, 44px);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    color: white;
+    margin-bottom: 20px;
+  }
+
+  .post-desc {
+    font-size: 16px;
+    font-weight: 200;
+    color: rgba(255,255,255,.60);
+    line-height: 1.65;
+    max-width: 640px;
+    margin-bottom: 28px;
+  }
+
+  .post-meta-bar {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .post-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 200;
+    color: rgba(255,255,255,.50);
+  }
+
+  /* ─── FEATURED IMAGE ─── */
+  .post-featured-image {
+    width: 100%;
+    height: 420px;
+    overflow: hidden;
+    background: #1a2132;
+  }
+  .post-featured-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* ─── ARTICLE BODY ─── */
+  .post-body-section {
+    padding: 64px 32px 80px;
+    background: var(--bg);
+  }
+  .post-body-inner {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 64px;
+    align-items: start;
+  }
+
+  .post-body {
+    max-width: 100%;
+  }
+
+  /* Article typography */
+  .post-body p {
+    font-size: 15px;
+    font-weight: 200;
+    color: #374151;
+    line-height: 1.75;
+    margin-bottom: 20px;
+  }
+  .post-body h2 {
+    font-size: clamp(20px, 3vw, 26px);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--primary);
+    margin: 40px 0 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .post-body h3 {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    color: var(--primary);
+    margin: 28px 0 12px;
+  }
+  .post-body ul,
+  .post-body ol {
+    margin: 16px 0 20px 0;
+    padding-left: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .post-body ul li,
+  .post-body ol li {
+    font-size: 15px;
+    font-weight: 200;
+    color: #374151;
+    line-height: 1.6;
+    padding-left: 20px;
+    position: relative;
+  }
+  .post-body ul li::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 8px;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--secondary);
+  }
+  .post-body ol { counter-reset: ol-counter; }
+  .post-body ol li::before {
+    content: counter(ol-counter);
+    counter-increment: ol-counter;
+    position: absolute;
+    left: 0; top: 0;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--secondary);
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    text-align: center;
+  }
+  .post-body strong { font-weight: 600; color: var(--primary); }
+  .post-body em { font-style: italic; }
+  .post-body a {
+    color: var(--secondary);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(10,132,216,.3);
+    transition: border-color 150ms ease;
+  }
+  .post-body a:hover { border-color: var(--secondary); }
+
+  /* ─── CALLOUT BOXES ─── */
+  .post-body .info-box {
+    background: rgba(10,132,216,.06);
+    border: 1px solid rgba(10,132,216,.18);
+    border-left: 3px solid var(--secondary);
+    padding: 20px 24px;
+    margin: 28px 0;
+  }
+  .post-body .info-box p {
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--primary);
+    margin: 0;
+    line-height: 1.65;
+  }
+
+  .post-body .warning-box {
+    background: rgba(245,158,11,.06);
+    border: 1px solid rgba(245,158,11,.20);
+    border-left: 3px solid #F59E0B;
+    padding: 20px 24px;
+    margin: 28px 0;
+  }
+  .post-body .warning-box p {
+    font-size: 14px;
+    font-weight: 300;
+    color: #78350F;
+    margin: 0;
+    line-height: 1.65;
+  }
+
+  .post-body .key-facts {
+    background: var(--surface);
+    padding: 28px 32px;
+    margin: 28px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .post-body .key-facts::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--secondary);
+  }
+  .post-body .key-facts h4 {
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--tertiary);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .post-body .key-facts h4::before {
+    content: '';
+    display: block;
+    width: 16px; height: 1px;
+    background: var(--tertiary);
+    opacity: .5;
+  }
+  .post-body .key-facts ul {
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+  }
+  .post-body .key-facts li {
+    font-size: 13px;
+    font-weight: 200;
+    color: rgba(255,255,255,.75);
+    padding-left: 18px;
+  }
+  .post-body .key-facts li::before {
+    background: var(--tertiary);
+    top: 7px;
+    width: 5px; height: 5px;
+  }
+
+  /* ─── SIDEBAR ─── */
+  .post-sidebar {
+    position: sticky;
+    top: 96px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .sidebar-card {
+    background: var(--neutral);
+    border: 1px solid var(--border);
+    padding: 24px;
+  }
+  .sidebar-card h4 {
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: #9CA3AF;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sidebar-card h4::before {
+    content: '';
+    display: block;
+    width: 12px; height: 1px;
+    background: var(--tertiary);
+  }
+
+  /* Doctor card */
+  .doctor-info {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .doctor-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--primary);
+    letter-spacing: -0.01em;
+  }
+  .doctor-title {
+    font-size: 12px;
+    font-weight: 200;
+    color: #6B7280;
+    line-height: 1.5;
+  }
+  .doctor-creds {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+  }
+  .doctor-cred {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 200;
+    color: #6B7280;
+  }
+
+  /* CTA card */
+  .cta-card {
+    background: var(--primary);
+    border: none;
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 80% 20%, rgba(10,132,216,.30) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .cta-card h4 {
+    color: rgba(255,255,255,.40);
+  }
+  .cta-card h4::before { background: var(--tertiary); }
+  .cta-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: white;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+    margin-bottom: 8px;
+    position: relative;
+    z-index: 1;
+  }
+  .cta-subtitle {
+    font-size: 12px;
+    font-weight: 200;
+    color: rgba(255,255,255,.55);
+    line-height: 1.55;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+  }
+  .cta-card .btn-primary {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    justify-content: center;
+    font-size: 13px;
+    padding: 11px 16px;
+  }
+
+  /* ─── RELATED ARTICLES ─── */
+  .related-section {
+    background: var(--neutral);
+    border-top: 1px solid var(--border);
+    padding: 64px 32px;
+  }
+  .related-header {
+    margin-bottom: 32px;
+  }
+  .section-label {
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--tertiary);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-label::before {
+    content: '';
+    display: block;
+    width: 16px; height: 1px;
+    background: var(--tertiary);
+    opacity: .5;
+  }
+  .section-title {
+    font-size: clamp(22px, 3vw, 32px);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    color: var(--primary);
+  }
+
+  /* Blog grid (same as blog.html) */
+  .blog-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+  .blog-card {
+    background: var(--neutral);
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    text-decoration: none;
+    color: var(--primary);
+    position: relative;
+    overflow: hidden;
+    transition: background 150ms ease;
+  }
+  .blog-card:hover { background: #F9FAFB; }
+  .blog-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--secondary);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 300ms ease;
+  }
+  .blog-card:hover::before { transform: scaleX(1); }
+  .blog-card-img {
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+    background: #F3F4F6;
+  }
+  .blog-card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 400ms ease;
+  }
+  .blog-card:hover .blog-card-img img { transform: scale(1.03); }
+  .blog-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+  }
+  .blog-category-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    font-weight: 300;
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+    background: rgba(10,132,216,.08);
+    color: var(--tertiary);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    width: fit-content;
+  }
+  .blog-card-title {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+  }
+  .blog-card-excerpt {
+    font-size: 13px;
+    font-weight: 200;
+    color: #6B7280;
+    line-height: 1.6;
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .blog-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    margin-top: auto;
+  }
+  .blog-card-author,
+  .blog-card-reading {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    font-weight: 200;
+    color: #9CA3AF;
+  }
+
+  /* ─── FOOTER (identical to blog.html) ─── */
+  footer {
+    background: #050810;
+    color: rgba(255,255,255,.4);
+    padding: 56px 32px 32px;
+    border-top: 1px solid rgba(255,255,255,.05);
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 48px;
+    margin-bottom: 48px;
+  }
+  .footer-brand > p {
+    font-size: 13px; font-weight: 200;
+    line-height: 1.65; margin-top: 16px;
+    color: rgba(255,255,255,.35);
+  }
+  .footer-logo {
+    font-size: 17px; font-weight: 600;
+    color: #fff; text-decoration: none;
+    letter-spacing: -0.02em;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .footer-logo span { color: var(--secondary); }
+  .footer-col h5 {
+    font-size: 10px; font-weight: 300;
+    letter-spacing: 0.10em; text-transform: uppercase;
+    color: rgba(255,255,255,.25); margin-bottom: 18px;
+  }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .footer-col a {
+    font-size: 13px; font-weight: 200;
+    color: rgba(255,255,255,.4);
+    text-decoration: none; transition: color 150ms ease;
+  }
+  .footer-col a:hover { color: rgba(255,255,255,.85); }
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,.05);
+    padding-top: 24px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 11px; font-weight: 200;
+  }
+
+  /* ─── STICKY MOBILE ─── */
+  .sticky-mobile {
+    display: none;
+    position: fixed;
+    bottom: 0; left: 0; right: 0; z-index: 200;
+    background: rgba(255,255,255,.96);
+    backdrop-filter: blur(var(--blur));
+    border-top: 1px solid var(--border);
+    padding: 12px 16px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    gap: 10px;
+  }
+  .sticky-mobile .btn-primary { flex: 1; justify-content: center; }
+  .sticky-phone {
+    display: flex; align-items: center; justify-content: center;
+    width: 50px; height: 50px;
+    background: #F3F4F6; border-radius: var(--radius-full);
+    text-decoration: none; color: var(--primary);
+    transition: background 150ms ease;
+  }
+  .sticky-phone:hover { background: #E5E7EB; }
+
+  /* ─── REVEAL ─── */
+  .reveal { opacity: 0; transform: translateY(28px); }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 1024px) {
+    .post-body-inner { grid-template-columns: 1fr; gap: 40px; }
+    .post-sidebar { position: static; flex-direction: row; flex-wrap: wrap; }
+    .sidebar-card { flex: 1; min-width: 240px; }
+    .blog-grid { grid-template-columns: repeat(2, 1fr); }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+  }
+
+  @media (max-width: 640px) {
+    .nav-links  { display: none; }
+    .hamburger  { display: flex; }
+    .sticky-mobile { display: flex; }
+    body        { padding-bottom: 74px; }
+    .post-hero  { padding: 40px 16px 48px; }
+    .post-body-section { padding: 40px 16px 56px; }
+    .related-section { padding: 40px 16px; }
+    .blog-grid  { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    footer      { padding: 40px 16px 24px; }
+    .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+    .post-sidebar { flex-direction: column; }
+    .breadcrumb { padding: 10px 16px; }
+    .post-featured-image { height: 240px; }
+  }
+</style>
+</head>
+<body data-page="post">
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Meniu navigare">
+  <button class="mobile-close" id="mobileClose" aria-label="Închide meniu">
+    <iconify-icon icon="solar:close-circle-linear" width="28" height="28"></iconify-icon>
+  </button>
+  <a href="/#conditions" onclick="closeMobile()">Afecțiuni</a>
+  <a href="/#treatments" onclick="closeMobile()">Tratamente</a>
+  <a href="/#technology" onclick="closeMobile()">Tehnologie</a>
+  <a href="/#doctor" onclick="closeMobile()">Dr. Tiron</a>
+  <a href="/blog.html" onclick="closeMobile()">Blog</a>
+  <a href="/#booking" class="btn-primary" onclick="closeMobile()" style="margin-top:8px;padding:14px 36px;font-size:16px;">
+    <iconify-icon icon="solar:calendar-add-linear" width="18" height="18"></iconify-icon>
+    Programează Consultație
+  </a>
+</div>
+
+<!-- Navigation -->
+<nav role="navigation" aria-label="Navigare principală">
+  <a href="/" class="nav-logo" aria-label="Clinica Tiron">
+    <iconify-icon icon="solar:hospital-linear" width="20" height="20" style="color:var(--secondary)"></iconify-icon>
+    Clinica <span>Tiron</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="/#conditions">Afecțiuni</a></li>
+    <li><a href="/#treatments">Tratamente</a></li>
+    <li><a href="/#technology">Tehnologie</a></li>
+    <li><a href="/#doctor">Dr. Tiron</a></li>
+    <li><a href="/blog.html" class="active">Blog</a></li>
+  </ul>
+  <a href="/#booking" class="btn-primary">
+    <iconify-icon icon="solar:calendar-add-linear" width="16" height="16"></iconify-icon>
+    Programează Consultație
+  </a>
+  <button class="hamburger" id="hamburger" aria-label="Deschide meniu" aria-expanded="false">
+    <iconify-icon icon="solar:hamburger-menu-linear" width="24" height="24"></iconify-icon>
+  </button>
+</nav>
+
+<!-- Breadcrumb -->
+<div class="breadcrumb">
+  <div class="breadcrumb-inner max-w">
+    <a href="/blog.html">Blog Medical</a>
+    <span class="breadcrumb-sep">›</span>
+    <span id="post-breadcrumb-title">Articol</span>
+  </div>
+</div>
+
+<!-- Post Hero -->
+<section class="post-hero" aria-labelledby="post-title">
+  <div class="post-hero-content max-w">
+    <div class="post-category-badge" id="post-category-badge">
+      <iconify-icon icon="solar:document-linear" width="13" height="13"></iconify-icon>
+      Categorie
+    </div>
+    <h1 class="post-title reveal" id="post-title">Se încarcă…</h1>
+    <p class="post-desc reveal" id="post-desc"></p>
+    <div class="post-meta-bar reveal">
+      <span class="post-meta-item" id="post-author">
+        <iconify-icon icon="solar:user-circle-linear" width="15" height="15" style="color:var(--tertiary)"></iconify-icon>
+        Dr. Ștefan Tiron
+      </span>
+      <span class="post-meta-item" id="post-reading-time">
+        <iconify-icon icon="solar:clock-circle-linear" width="15" height="15" style="color:var(--tertiary)"></iconify-icon>
+        — min citire
+      </span>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Image (hidden if no image) -->
+<div id="post-featured-image" class="post-featured-image" style="display:none"></div>
+
+<!-- Article Body + Sidebar -->
+<section class="post-body-section">
+  <div class="post-body-inner max-w">
+
+    <!-- Main article body -->
+    <article class="post-body" id="post-body" aria-label="Conținut articol">
+      <!-- Populated by blog.js -->
+    </article>
+
+    <!-- Sidebar -->
+    <aside class="post-sidebar" aria-label="Informații clinică">
+
+      <!-- CTA -->
+      <div class="sidebar-card cta-card">
+        <h4>Consultație</h4>
+        <p class="cta-title">Programează-te la Clinica Tiron</p>
+        <p class="cta-subtitle">Tratamente non-chirurgicale personalizate. Răspundem în maxim 2 ore.</p>
+        <a href="/#booking" class="btn-primary">
+          <iconify-icon icon="solar:calendar-add-linear" width="14" height="14"></iconify-icon>
+          Programare online
+        </a>
+      </div>
+
+      <!-- Doctor info -->
+      <div class="sidebar-card">
+        <h4>Autor</h4>
+        <div class="doctor-info">
+          <span class="doctor-name">Dr. Ștefan Tiron</span>
+          <span class="doctor-title">Medic specialist în ozonoterapie, medicină funcțională și posturologie</span>
+          <div class="doctor-creds">
+            <span class="doctor-cred">
+              <iconify-icon icon="solar:cup-star-linear" width="13" height="13" style="color:var(--tertiary)"></iconify-icon>
+              Președinte WFOT 2018–2022
+            </span>
+            <span class="doctor-cred">
+              <iconify-icon icon="solar:buildings-linear" width="13" height="13" style="color:var(--tertiary)"></iconify-icon>
+              15+ ani experiență clinică
+            </span>
+            <span class="doctor-cred">
+              <iconify-icon icon="solar:users-group-two-rounded-linear" width="13" height="13" style="color:var(--tertiary)"></iconify-icon>
+              3.000+ pacienți tratați
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact quick -->
+      <div class="sidebar-card">
+        <h4>Contact rapid</h4>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <a href="tel:+40000000000" style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:200;color:var(--primary);text-decoration:none;transition:color 150ms ease">
+            <iconify-icon icon="solar:phone-linear" width="14" height="14" style="color:var(--secondary)"></iconify-icon>
+            0700 000 000
+          </a>
+          <a href="https://wa.me/40000000000" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:200;color:var(--primary);text-decoration:none;transition:color 150ms ease">
+            <iconify-icon icon="solar:chat-round-dots-linear" width="14" height="14" style="color:var(--secondary)"></iconify-icon>
+            WhatsApp
+          </a>
+          <a href="mailto:contact@clinicatiron.ro" style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:200;color:var(--primary);text-decoration:none;transition:color 150ms ease">
+            <iconify-icon icon="solar:letter-linear" width="14" height="14" style="color:var(--secondary)"></iconify-icon>
+            contact@clinicatiron.ro
+          </a>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+</section>
+
+<!-- Related Articles -->
+<section class="related-section" id="related-section">
+  <div class="max-w">
+    <div class="related-header">
+      <p class="section-label">Aceeași categorie</p>
+      <h2 class="section-title">Articole similare</h2>
+    </div>
+    <div class="blog-grid" id="related-grid">
+      <!-- Populated by blog.js -->
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-grid max-w">
+    <div class="footer-brand">
+      <a href="/" class="footer-logo">
+        <iconify-icon icon="solar:hospital-linear" width="18" height="18" style="color:var(--secondary)"></iconify-icon>
+        Clinica <span>Tiron</span>
+      </a>
+      <p>Specialist în coloana vertebrală, diagnostic avansat și tratament non-chirurgical. Clinică privată cu experiență de peste 15 ani.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Afecțiuni</h5>
+      <ul>
+        <li><a href="/#conditions">Durere de spate</a></li>
+        <li><a href="/#conditions">Hernie de disc</a></li>
+        <li><a href="/#conditions">Sciatică</a></li>
+        <li><a href="/#conditions">Durere de gât</a></li>
+        <li><a href="/#conditions">Scolioză</a></li>
+        <li><a href="/#conditions">Amețeli</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Clinica</h5>
+      <ul>
+        <li><a href="/#doctor">Dr. Tiron</a></li>
+        <li><a href="/#technology">Tehnologie</a></li>
+        <li><a href="/#treatments">Tratamente</a></li>
+        <li><a href="/#reviews">Recenzii</a></li>
+        <li><a href="/blog.html">Blog Medical</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Contact</h5>
+      <ul>
+        <li><a href="tel:+40000000000">0700 000 000</a></li>
+        <li><a href="mailto:contact@clinicatiron.ro">Email</a></li>
+        <li><a href="https://wa.me/40000000000" target="_blank" rel="noopener">WhatsApp</a></li>
+        <li><a href="/#booking">Programare online</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom max-w">
+    <span>© 2024 Clinica Tiron. Toate drepturile rezervate.</span>
+    <span>Politica de confidențialitate · GDPR</span>
+  </div>
+</footer>
+
+<!-- Sticky Mobile CTA -->
+<div class="sticky-mobile" id="stickyMobile">
+  <a href="tel:+40000000000" class="sticky-phone" aria-label="Sună acum">
+    <iconify-icon icon="solar:phone-linear" width="22" height="22"></iconify-icon>
+  </a>
+  <a href="/#booking" class="btn-primary">
+    <iconify-icon icon="solar:calendar-add-linear" width="16" height="16"></iconify-icon>
+    Programează Consultație
+  </a>
+</div>
+
+<script>
+function closeMobile() {
+  document.getElementById('mobileMenu')?.classList.remove('open');
+  document.getElementById('hamburger')?.setAttribute('aria-expanded', 'false');
+  document.body.style.overflow = '';
+}
+document.getElementById('hamburger')?.addEventListener('click', function() {
+  const menu = document.getElementById('mobileMenu');
+  const open = menu.classList.toggle('open');
+  this.setAttribute('aria-expanded', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+});
+document.getElementById('mobileClose')?.addEventListener('click', closeMobile);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMobile(); });
+</script>
+
+<script type="module" src="/src/blog/blog.js"></script>
+</body>
+</html>
