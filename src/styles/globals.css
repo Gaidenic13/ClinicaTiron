@@ -7,27 +7,27 @@
 :root {
   /* Core palette */
   --color-primary:        #111827;
-  --color-secondary:      #2640D9;
-  --color-tertiary:       #8A66E6;
+  --color-secondary:      #0A84D8;
+  --color-tertiary:       #38A8F5;
   --color-neutral:        #FFFFFF;
   --color-bg:             #FAFAFA;
   --color-surface:        #111827;
   --color-text-primary:   #111827;
-  --color-text-secondary: #8A66E6;
+  --color-text-secondary: #0A84D8;
   --color-border:         #E5E7EB;
   --color-border-dark:    #111827;
   --color-accent:         #111827;
 
   /* Gradients */
-  --gradient-hero:        linear-gradient(90deg, #6633E6 30%, #4059F0 100%);
-  --gradient-overlay:     linear-gradient(to right, rgba(102,51,230,.30), rgba(64,89,240,.30));
+  --gradient-hero:        linear-gradient(90deg, #38A8F5 30%, #0A84D8 100%);
+  --gradient-overlay:     linear-gradient(to right, rgba(56,168,245,.30), rgba(10,132,216,.30));
   --gradient-depth:       linear-gradient(to bottom, transparent, rgba(17,24,39,.40), transparent);
 
   /* ── Shadows (exact spec recipe) ─────────────────────── */
   --shadow-glow:
     rgba(0,0,0,0)      0px 0px 0px 0px,
     rgba(0,0,0,0)      0px 0px 0px 0px,
-    rgb(38,64,217)     0px 0px 10px 0px,
+    rgb(10,132,216)    0px 0px 10px 0px,
     rgba(0,0,0,0)      0px 0px 0px 0px,
     rgba(0,0,0,0)      0px 0px 0px 0px,
     rgba(0,0,0,.10)    0px 0px 20px 0px;

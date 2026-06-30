@@ -14,20 +14,20 @@
 
   :root {
     --primary:        #111827;
-    --secondary:      #2640D9;
-    --tertiary:       #8A66E6;
+    --secondary:      #0A84D8;
+    --tertiary:       #38A8F5;
     --neutral:        #FFFFFF;
     --bg:             #FAFAFA;
     --surface:        #111827;
     --text-primary:   #111827;
-    --text-secondary: #8A66E6;
+    --text-secondary: #0A84D8;
     --border:         #E5E7EB;
     --border-dark:    #111827;
     --accent:         #111827;
     --radius-full:    9999px;
     --radius-md:      0px;
     /* Exact shadow from design spec */
-    --shadow-glow:    rgba(0,0,0,0) 0px 0px 0px 0px, rgba(0,0,0,0) 0px 0px 0px 0px, rgb(38,64,217) 0px 0px 10px 0px, rgba(0,0,0,0) 0px 0px 0px 0px, rgba(0,0,0,0) 0px 0px 0px 0px, rgba(0,0,0,0.1) 0px 0px 20px 0px;
+    --shadow-glow:    rgba(0,0,0,0) 0px 0px 0px 0px, rgba(0,0,0,0) 0px 0px 0px 0px, rgb(10,132,216) 0px 0px 10px 0px, rgba(0,0,0,0) 0px 0px 0px 0px, rgba(0,0,0,0) 0px 0px 0px 0px, rgba(0,0,0,0.1) 0px 0px 20px 0px;
     --blur:           12px;
   }
 
@@ -255,8 +255,8 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: rgba(138,102,230,.08);
-    border: 1px solid rgba(138,102,230,.20);
+    background: rgba(10,132,216,.08);
+    border: 1px solid rgba(10,132,216,.20);
     border-radius: var(--radius-full);
     padding: 6px 14px 6px 10px;
     font-size: 12px;
@@ -385,7 +385,7 @@
   }
   .hero h1 em {
     font-style: normal;
-    background: linear-gradient(90deg, #8A66E6 0%, #2640D9 100%);
+    background: linear-gradient(90deg, #38A8F5 0%, #0A84D8 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -451,8 +451,8 @@
     padding: 1px;
     background: repeating-linear-gradient(
       45deg,
-      rgba(138,102,230,0.25) 0px,
-      rgba(138,102,230,0.25) 1px,
+      rgba(10,132,216,0.25) 0px,
+      rgba(10,132,216,0.25) 1px,
       rgba(0,0,0,0) 1px,
       rgba(0,0,0,0) 48px
     );
@@ -612,7 +612,7 @@
     color: var(--tertiary);
     transition: background 300ms ease, color 300ms ease;
   }
-  .path-card:hover .path-icon { background: rgba(38,64,217,.06); color: var(--secondary); }
+  .path-card:hover .path-icon { background: rgba(10,132,216,.06); color: var(--secondary); }
 
   .path-card h3 {
     font-size: 14px;
@@ -724,7 +724,7 @@
   }
   .search-bar input:focus {
     border-color: var(--secondary);
-    box-shadow: 0 0 0 3px rgba(38,64,217,.07);
+    box-shadow: 0 0 0 3px rgba(10,132,216,.07);
   }
   .search-bar input::placeholder { color: #9CA3AF; }
   .search-btn {
@@ -837,8 +837,8 @@
     position: absolute;
     inset: 0;
     background:
-      radial-gradient(ellipse at 80% 40%, rgba(102,51,230,.18) 0%, transparent 55%),
-      radial-gradient(ellipse at 10% 80%, rgba(38,64,217,.1) 0%, transparent 50%);
+      radial-gradient(ellipse at 80% 40%, rgba(10,132,216,.18) 0%, transparent 55%),
+      radial-gradient(ellipse at 10% 80%, rgba(10,132,216,.10) 0%, transparent 50%);
     pointer-events: none;
   }
   .technology::after {
@@ -970,7 +970,7 @@
 
   .tech-icon {
     width: 40px; height: 40px;
-    background: rgba(138,102,230,.12);
+    background: rgba(10,132,216,.12);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1194,7 +1194,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse at 20% 60%, rgba(38,64,217,.18) 0%, transparent 55%);
+    background: radial-gradient(ellipse at 20% 60%, rgba(10,132,216,.18) 0%, transparent 55%);
     pointer-events: none;
   }
   .booking::after {
@@ -1346,7 +1346,7 @@
   .form-group input:focus,
   .form-group select:focus,
   .form-group textarea:focus {
-    border-color: rgba(138,102,230,.55);
+    border-color: rgba(10,132,216,.55);
   }
   .form-group select option { background: #0A0F1E; color: #fff; }
   .form-group textarea { resize: vertical; min-height: 72px; }
@@ -2001,7 +2001,7 @@
   <div class="max-w">
     <p class="section-label" style="color:var(--tertiary)">Tehnologie avansată</p>
     <h2 class="section-title reveal" id="tech-heading" style="color:#fff">
-      Nu ghicim. <em style="font-style:normal;background:linear-gradient(90deg,#8A66E6,#2640D9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Măsurăm.</em>
+      Nu ghicim. <em style="font-style:normal;background:linear-gradient(90deg,#38A8F5,#0A84D8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Măsurăm.</em>
     </h2>
   </div>
   <div class="tech-grid max-w">
